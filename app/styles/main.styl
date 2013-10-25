@@ -1,0 +1,118 @@
+// Variables
+bg_color = #00bfff
+
+clip_list_color = #DDD
+
+clip_size = 160px
+half_clip_size = clip_size / 2
+clip_types = addnew choose record instrument drum live
+clip_colors = #eaeac2 #8fbc8f #ff4500 #b0e0e6 #f5f5f5 #dda0dd
+clip_text_color = #111
+
+
+std_border = 1px solid black
+
+text_sizes = 10px 16px 22px 30px 50px 
+
+// Functions
+
+border_radius(r)
+  border-radius r
+  -moz-border-radius r
+  -webkit-border-radius r
+
+// Actual CSS
+*
+  margin 0
+  padding 0
+
+.left
+  float left
+
+.right
+  float right
+
+.tiny
+  font-size text_sizes[0]
+
+.small
+  font-size text_sizes[1]
+
+.med
+  font-size text_sizes[2]
+
+.large
+  font-size text_sizes[3]
+
+.huge
+  font-size text_sizes[4]
+
+.red
+  color: red
+
+.clearfix:after
+  visibility hidden
+  display block
+  font-size 0
+  content " "
+  clear both
+  height 0
+
+body 
+  background-color bg_color
+
+.clips 
+  margin 100px auto
+  width 820px
+  padding 20px
+  background-color clip_list_color
+  border std_border
+  border_radius 20px
+  box-shadow 10px 10px 5px #888
+
+
+.clip 
+  width clip_size
+  height clip_size
+  margin 10px
+  padding 10px
+  border std_border
+  border_radius 10px
+  cursor pointer
+  float left
+
+.clip.addnew
+  width half_clip_size
+
+for type, idx in clip_types
+  .clip.{type}
+    background-color clip_colors[idx]
+  .clip.{type}:hover
+      background-color lighten(clip_colors[idx], 20%)
+  .clip.{type} .text:hover
+      background-color lighten(clip_colors[idx], 40%)
+
+.clipcontainer .text
+  margin 0 auto
+  width 100%
+  padding 7px 0
+  color clip_text_color
+  text-align center
+  vertical-align center
+  &:hover
+    color lighten(clip_text_color, 20%)
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
