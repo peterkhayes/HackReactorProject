@@ -361,6 +361,7 @@ if (typeof (MIDI) === "undefined") var MIDI = {};
 
 if (typeof (MIDI.WebAudioAPI) === "undefined") MIDI.WebAudioAPI = {};
 
+
 if (window.AudioContext || window.webkitAudioContext) (function () {
 
 	var AudioContext = window.AudioContext || window.webkitAudioContext;
@@ -534,12 +535,13 @@ if (window.Audio) (function () {
 				playChannel(channel, id);
 			}, delay * 1000);
 		} else {
+			console.log("note playing!")
 			playChannel(channel, id);
 		}
 	};
 	
 	root.noteOff = function (channel, note, delay) {
-
+		root.noteOn(channel, note, 0, delay);
 	};
 	
 	root.chordOn = function (channel, chord, velocity, delay) {
@@ -552,7 +554,7 @@ if (window.Audio) (function () {
 	};
 	
 	root.chordOff = function (channel, chord, delay) {
-
+		root.chordOn(channel, note, 0, delay);
 	};
 	
 	root.stopAllNotes = function () {

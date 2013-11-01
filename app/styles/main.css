@@ -16,7 +16,7 @@ header .button:hover,footer .button:hover{background-color:#0a5cff}
 header .button.left,footer .button.left{border-right:2px solid #0053fa}
 header .button.right,footer .button.right{border-left:2px solid #0053fa}
 header .button{padding:10px 25px}
-.clips{margin:60px auto;width:900px;padding:20px;background-color:#ddd;border:1px solid #000;border-radius:20px;-moz-border-radius:20px;-webkit-border-radius:20px;-moz-box-shadow:5px 5px 5px #666;-webkit-box-shadow:5px 5px 5px #666;box-shadow:5px 5px 5px #666;color:#111}
+.clips{margin:100px auto;width:900px;padding:20px;background-color:#ddd;border:1px solid #000;border-radius:20px;-moz-border-radius:20px;-webkit-border-radius:20px;-moz-box-shadow:5px 5px 5px #666;-webkit-box-shadow:5px 5px 5px #666;box-shadow:5px 5px 5px #666;color:#111}
 .button.big,.clip{height:160px;width:160px;padding:20px;margin:10px;border-radius:20px;-moz-border-radius:20px;-webkit-border-radius:20px;border:1px solid #808080;float:left;cursor:pointer;text-align:center;-moz-box-shadow:3px 3px 3px #666;-webkit-box-shadow:3px 3px 3px #666;box-shadow:3px 3px 3px #666;}
 .button.big.flash,.clip.flash{border:2px solid #f00;padding:19px;-moz-box-shadow:3px 3px 3px #b00;-webkit-box-shadow:3px 3px 3px #b00;box-shadow:3px 3px 3px #b00}
 .button.big{background-color:#beb;}
