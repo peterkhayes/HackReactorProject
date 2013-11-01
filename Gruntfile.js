@@ -48,10 +48,6 @@ module.exports = function (grunt) {
                 files: ['test/spec/{,*/}*.coffee'],
                 tasks: ['coffee:test']
             },
-            compass: {
-                files: ['<%= yeoman.app %>/styles/{,*/}*.{scss,sass}'],
-                tasks: ['compass']
-            },
             stylus: {
                 files: ['<%= yeoman.app %>/styles/**/*.styl'],
                 tasks: ['stylus']
@@ -172,23 +168,6 @@ module.exports = function (grunt) {
                     dest: '.tmp/spec',
                     ext: '.js'
                 }]
-            }
-        },
-        compass: {
-            options: {
-                sassDir: '<%= yeoman.app %>/styles',
-                cssDir: '.tmp/styles',
-                imagesDir: '<%= yeoman.app %>/images',
-                javascriptsDir: '<%= yeoman.app %>/scripts',
-                fontsDir: '<%= yeoman.app %>/styles/fonts',
-                importPath: '<%= yeoman.app %>/bower_components',
-                relativeAssets: true
-            },
-            dist: {},
-            server: {
-                options: {
-                    debugInfo: true
-                }
             }
         },
         // not enabled since usemin task does concat and uglify
@@ -314,7 +293,6 @@ module.exports = function (grunt) {
                 'coffee',
                 'createDefaultTemplate',
                 'handlebars',
-                'compass:server',
                 'stylus',
                 'connect:test:keepalive'
             ]);
@@ -325,7 +303,6 @@ module.exports = function (grunt) {
             'coffee:dist',
             'createDefaultTemplate',
             'handlebars',
-            'compass:server',
             'stylus',
             'connect:livereload',
             'open',
@@ -338,7 +315,6 @@ module.exports = function (grunt) {
         'coffee',
         'createDefaultTemplate',
         'handlebars',
-        'compass',
         'stylus',
         'jasmine',
         'watch:test'
@@ -349,7 +325,6 @@ module.exports = function (grunt) {
         'coffee',
         'createDefaultTemplate',
         'handlebars',
-        'compass:dist',
         'stylus',
         'useminPrepare',
         'imagemin',
