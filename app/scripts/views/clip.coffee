@@ -5,22 +5,17 @@ class Tunesmith.Views.ClipView extends Backbone.View
   className: 'clip'
 
   initialize: ->
-    @model.on('cancel', @remove, @)
+    @model.on('note', @flash, @)
 
-  events:
-    'click': ->
-      @model.click()
-    'click .action': (e) ->
-      @model.changeTo $(e.target).attr('action')
+  render: ->
+    attrs = @model.attributes
+    attrs.Type = attrs.type.charAt(0).toUpperCase() + attrs.type.slice(1);
+    @$el.html(Templates['clip'](attrs))
+    @$el
 
-  render: =>
-    type = @model.get 'type'
-    @$el.addClass type
+  flash: =>
+    @$el.addClass('flash');
+    setTimeout(@unflash.bind(@), 50)
 
-    template = Templates['clip_' + type]    
-    @$el.html(template())
-    return @$el
-
-  remove: ->
-    @$el.remove()
-
+  unflash: =>
+    @$el.removeClass('flash');

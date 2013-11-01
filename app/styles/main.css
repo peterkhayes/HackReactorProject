@@ -1,4 +1,5 @@
-*{margin:0;padding:0}
+
+*{margin:0;padding:0;font-family:helvetica}
 .left{float:left}
 .right{float:right}
 .tiny{font-size:10px}
@@ -9,26 +10,32 @@
 .red{color:#f00}
 .clearfix:after{visibility:hidden;display:block;font-size:0;content:" ";clear:both;height:0}
 body{background-color:#00bfff}
-.clips{margin:100px auto;width:820px;padding:20px;background-color:#ddd;border:1px solid #000;border-radius:20px;-moz-border-radius:20px;-webkit-border-radius:20px;box-shadow:10px 10px 5px #888}
-.clip{width:160px;height:160px;margin:10px;padding:10px;border:1px solid #000;border-radius:10px;-moz-border-radius:10px;-webkit-border-radius:10px;cursor:pointer;float:left}
-.clip.addnew{width:80px}
-.clip.addnew{background-color:#eaeac2}
-.clip.addnew:hover{background-color:#eeeece}
-.clip.addnew .text:hover{background-color:#f2f2da}
-.clip.choose{background-color:#8fbc8f}
-.clip.choose:hover{background-color:#a5c9a5}
-.clip.choose .text:hover{background-color:#bcd7bc}
-.clip.record{background-color:#ff4500}
-.clip.record:hover{background-color:#ff6a33}
-.clip.record .text:hover{background-color:#ff8f66}
-.clip.instrument{background-color:#b0e0e6}
-.clip.instrument:hover{background-color:#c0e6eb}
-.clip.instrument .text:hover{background-color:#d0ecf0}
-.clip.drum{background-color:#f5f5f5}
-.clip.drum:hover{background-color:#f7f7f7}
-.clip.drum .text:hover{background-color:#f9f9f9}
-.clip.live{background-color:#dda0dd}
-.clip.live:hover{background-color:#e4b3e4}
-.clip.live .text:hover{background-color:#ebc6eb}
-.clipcontainer .text{margin:0 auto;width:100%;padding:8px 0;color:#111;text-align:center;vertical-align:center;}
-.clipcontainer .text:hover{color:#414141}
+header{background-color:#04c;color:#f9f9f9;width:100%;position:fixed;left:0;top:0}
+header .button,footer .button{background-color:#04c;display:inline-block;cursor:pointer;}
+header .button:hover,footer .button:hover{background-color:#0a5cff}
+header .button.left,footer .button.left{border-right:2px solid #0053fa}
+header .button.right,footer .button.right{border-left:2px solid #0053fa}
+header .button{padding:10px 25px}
+.clips{margin:60px auto;width:900px;padding:20px;background-color:#ddd;border:1px solid #000;border-radius:20px;-moz-border-radius:20px;-webkit-border-radius:20px;-moz-box-shadow:5px 5px 5px #666;-webkit-box-shadow:5px 5px 5px #666;box-shadow:5px 5px 5px #666;color:#111}
+.button.big,.clip{height:160px;width:160px;padding:20px;margin:10px;border-radius:20px;-moz-border-radius:20px;-webkit-border-radius:20px;border:1px solid #808080;float:left;cursor:pointer;text-align:center;-moz-box-shadow:3px 3px 3px #666;-webkit-box-shadow:3px 3px 3px #666;box-shadow:3px 3px 3px #666;}
+.button.big.flash,.clip.flash{border:2px solid #f00;padding:19px;-moz-box-shadow:3px 3px 3px #b00;-webkit-box-shadow:3px 3px 3px #b00;box-shadow:3px 3px 3px #b00}
+.button.big{background-color:#beb;}
+.button.big:hover{background-color:#cff3cf}
+.button.big:active{background-color:#aaeaaa;-moz-box-shadow:none;-webkit-box-shadow:none;box-shadow:none;position:relative;left:2px;top:2px}
+.clip{background-color:#fefefe;}
+.clip:hover{background-color:#fefefe}
+.clip:active{background-color:#f1f1f1;-moz-box-shadow:none;-webkit-box-shadow:none;box-shadow:none;position:relative;left:2px;top:2px}
+.button.big.add{background-color:#ff6;}
+.button.big.add:hover{background-color:#ffff94}
+.button.big.add:active{background-color:#ffff54;-moz-box-shadow:none;-webkit-box-shadow:none;box-shadow:none;position:relative;left:2px;top:2px}
+.button.big.cancel{background-color:#fc9;}
+.button.big.cancel:hover{background-color:#ffdbb8}
+.button.big.cancel:active{background-color:#ffc285;-moz-box-shadow:none;-webkit-box-shadow:none;box-shadow:none;position:relative;left:2px;top:2px}
+.recordingText{font-size:100px;margin:50px 0 0 300px}
+.button img,.clip img{height:75%;width:75%;margin:10px auto}
+.button p,.clip p{margin-top:-5px}
+.playbackBar{display:none;margin:100px auto 0;width:500px;padding:10px;border:1px solid #000;border-radius:5px;-moz-border-radius:5px;-webkit-border-radius:5px;-moz-box-shadow:5px 5px 5px #666;-webkit-box-shadow:5px 5px 5px #666;box-shadow:5px 5px 5px #666;background-color:#ddd;color:#111;}
+.playbackBar width:.button{width:5%;text-align:center;padding:10px 0}
+.playbackBar .playbackBarContainer{width:94.5%;height:100%}
+.playbackGrad{z-index:-1;position:fixed;top:0;left:0;width:100%;height:100%;background-color:#1ac5ff;}
+.playbackGrad.flash{background-color:#48d1ff}

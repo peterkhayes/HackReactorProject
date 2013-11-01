@@ -1,30 +1,49 @@
+// Functions
+
+border-radius(r)
+  border-radius r
+  -moz-border-radius r
+  -webkit-border-radius r
+
+box-shadow()
+  -moz-box-shadow: arguments
+  -webkit-box-shadow: arguments
+  box-shadow: arguments
+
+button-background(col)
+  background-color: col
+  &:hover
+    background-color lighten(@background-color, 30%)
+  &:active
+    background-color darken(@background-color, 5%)
+    box-shadow none
+    position: relative
+    left: 2px
+    top: 2px
+
+
 // Variables
 bg_color = #00bfff
+
+header_color = #0044cc
 
 clip_list_color = #DDD
 
 clip_size = 160px
-half_clip_size = clip_size / 2
-clip_types = addnew choose record instrument drum live
-clip_colors = #eaeac2 #8fbc8f #ff4500 #b0e0e6 #f5f5f5 #dda0dd
+clip_padding = 20px
+clip_margin = 10px
 clip_text_color = #111
-
+clip_border_radius = 20px
 
 std_border = 1px solid black
 
-text_sizes = 10px 16px 22px 30px 50px 
-
-// Functions
-
-border_radius(r)
-  border-radius r
-  -moz-border-radius r
-  -webkit-border-radius r
+text_sizes = 10px 16px 22px 30px 50px
 
 // Actual CSS
 *
   margin 0
   padding 0
+  font-family: helvetica
 
 .left
   float left
@@ -61,58 +80,106 @@ border_radius(r)
 body 
   background-color bg_color
 
+header
+  background-color header_color
+  color: #F9F9F9
+  width: 100%
+  position: fixed
+  left: 0px
+  top: 0px
+  
+
+header .button, footer .button
+  background-color header_color
+  display:inline-block
+  cursor: pointer
+  &:hover
+    background-color: lighten(@background-color, 20%)
+  &.left
+    border-right: 2px solid lighten(@background-color, 15%)
+  &.right
+    border-left: 2px solid lighten(@background-color, 15%)
+
+header .button
+  padding 10px 25px
+
+
 .clips 
-  margin 100px auto
-  width 820px
+  margin 60px auto
+  width 900px
   padding 20px
   background-color clip_list_color
   border std_border
-  border_radius 20px
-  box-shadow 10px 10px 5px #888
+  border-radius 20px
+  box-shadow: 5px 5px 5px #666
+  color: #111
 
+.button.big, .clip
+  height: clip_size
+  width: clip_size
+  padding: clip_padding
+  margin: clip_margin
+  border-radius clip_border_radius
+  border: 1px solid grey
+  float:left
+  cursor: pointer
+  text-align: center
+  box-shadow: 3px 3px 3px #666
+  &.flash
+    border: 2px solid red
+    padding: clip_padding - 1
+    box-shadow: 3px 3px 3px #B00
 
-.clip 
-  width clip_size
-  height clip_size
-  margin 10px
+.button.big
+  button-background #BBEEBB
+
+.clip
+  button-background #FEFEFE
+
+.button.big.add
+  button-background #FFFF66
+
+.button.big.cancel
+  button-background #FFCC99
+
+.recordingText
+  font-size:100px
+  margin: 50px 0 0 300px 
+
+.button img, .clip img
+  height: 75%
+  width: 75%
+  margin:10px auto
+
+.button p, .clip p
+  margin-top: -5px
+
+.playbackBar
+  display:none
+  margin 100px auto 0
+  width 500px
   padding 10px
   border std_border
-  border_radius 10px
-  cursor pointer
-  float left
+  border-radius 5px
+  box-shadow: 5px 5px 5px #666
+  background-color clip_list_color
+  color: #111
+  width: 
+  .button 
+    width: 5%
+    text-align center
+    padding: 10px 0
+  .playbackBarContainer
+    width:94.5%
+    height: 100%
 
-.clip.addnew
-  width half_clip_size
-
-for type, idx in clip_types
-  .clip.{type}
-    background-color clip_colors[idx]
-  .clip.{type}:hover
-      background-color lighten(clip_colors[idx], 20%)
-  .clip.{type} .text:hover
-      background-color lighten(clip_colors[idx], 40%)
-
-.clipcontainer .text
-  margin 0 auto
-  width 100%
-  padding 7px 0
-  color clip_text_color
-  text-align center
-  vertical-align center
-  &:hover
-    color lighten(clip_text_color, 20%)
-
-
-  
-
-
-
-
-
-
-
-
-
-
-
-
+.playbackGrad
+  z-index: -1
+  position:fixed;
+  top:0
+  left:0
+  width:100%
+  height:100%
+  background-color lighten(bg_color, 10%)
+  &.flash
+    background-color lighten(@background-color, 20%)

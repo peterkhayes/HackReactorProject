@@ -19,6 +19,7 @@ module.exports = function (grunt) {
     // load all grunt tasks
     require('load-grunt-tasks')(grunt);
     grunt.loadNpmTasks('grunt-contrib-stylus');
+    grunt.loadNpmTasks('grunt-express');
 
     // configurable paths
     var yeomanConfig = {
@@ -52,7 +53,7 @@ module.exports = function (grunt) {
                 tasks: ['compass']
             },
             stylus: {
-                files: ['<%= yeoman.app %>/styles/{,*/}*.{styl}'],
+                files: ['<%= yeoman.app %>/styles/**/*.styl'],
                 tasks: ['stylus']
             },
             livereload: {
