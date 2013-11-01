@@ -16,3 +16,5 @@ app.use(express.static(__dirname + '/app'));
 
 app.listen(9000);
 console.log('listening on port 9000');
+
+module.exports = app;

@@ -76,45 +76,6 @@ module.exports = function (grunt) {
                 tasks: ['test']
             }
         },
-        // express: {
-        //     options: {
-        //         port: 9000,
-        //         // change this to '0.0.0.0' to access the server from outside
-        //         hostname: 'localhost'
-        //     },
-        //     livereload: {
-        //         options: {
-        //             middleware: function (express) {
-        //                 return [
-        //                     lrSnippet,
-        //                     mountFolder(express, '.tmp'),
-        //                     mountFolder(express, yeomanConfig.app)
-        //                 ];
-        //             }
-        //         }
-        //     },
-        //     test: {
-        //         options: {
-        //             port: 9001,
-        //             middleware: function (express) {
-        //                 return [
-        //                     mountFolder(express, '.tmp'),
-        //                     mountFolder(express, 'test'),
-        //                     mountFolder(express, yeomanConfig.app)
-        //                 ];
-        //             }
-        //         }
-        //     },
-        //     dist: {
-        //         options: {
-        //             middleware: function (express) {
-        //                 return [
-        //                     mountFolder(express, yeomanConfig.dist)
-        //                 ];
-        //             }
-        //         }
-        //     }
-        // },
         express: {
             options: {
                 port: 9000,
