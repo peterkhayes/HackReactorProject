@@ -4,11 +4,12 @@ class Tunesmith.Views.AppView extends Backbone.View
 
   initialize: ->
     console.log "intialized app view."
-    @model = new Tunesmith.Models.AppModel()
     @render()
 
   events: ->
-    'click header .newSong': 'initialize'
+    'click header .newSong': ->
+      @model.initialize()
+      @render()
     'click header .newSection': ->
       @model.newSection()
       @render()

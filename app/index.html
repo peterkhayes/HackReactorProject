@@ -41,12 +41,17 @@
         <script src="bower_components/handlebars/handlebars.js"></script>
         <script src="lib/Base64Binary.js"></script>
         <script src="lib/MIDI-js.js"></script>
-        <script src="lib/heap.js"></script>
+        <script src="lib/fft.js"></script>
+        <script src="lib/pitch.js"></script>
+        <script src="lib/recorder.js"></script>
+
         <!-- endbuild -->
 
         <!-- build:js({.tmp,app}) scripts/main.js -->
         <script src="scripts/main.js"></script>
         <script src="scripts/models/MIDI.js"></script>
+        <script src="scripts/models/Recorder.js"></script>
+        <script src="scripts/models/pitchDetector.js"></script>
         <script src="scripts/templates.js"></script>
         <script src="scripts/routes/routes.js"></script>
         <script src="scripts/models/app.js"></script>
@@ -55,7 +60,6 @@
         <script src="scripts/views/clip.js"></script>
         <script src="scripts/collections/clips.js"></script>
         <script src="scripts/views/clips.js"></script>
-        <script src="scripts/models/Recorder.js"></script>
         <script src="scripts/views/playbackBar.js"></script>
         <!-- endbuild -->
 </body>

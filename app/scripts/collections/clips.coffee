@@ -9,4 +9,5 @@ class Tunesmith.Collections.ClipCollection extends Backbone.Collection
       clip.play(time)
     )
 
-
+  stopRecordingAndAddClip: ->
+    @trigger 'stopRecordingAndAddClip'
