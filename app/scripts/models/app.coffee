@@ -9,7 +9,7 @@ class Tunesmith.Models.AppModel extends Backbone.Model
     cliplist.on('stopRecordingAndAddClip', @stopRecordingAndAddClip, @)
 
     @set 'cliplist', cliplist
-    @set 'minInterval', 16
+    @set 'minInterval', 8
     @set 'tempo', 120
     @set 'maxTime', 8*@get('minInterval')
     @set 'currentTime', 0
@@ -37,22 +37,25 @@ class Tunesmith.Models.AppModel extends Backbone.Model
   record: (clip) ->
     @set 'currentTime', 0
     @set 'recordingDestination', clip
-    @get('recorder').command('record')
+    @get('recorder').record()
 
   stopRecordingAndAddClip: ->
-    console.log 'SRAAC called'
-    clip = @get('recordingDestination')
-    recorder = @get('recorder')
-    pitchDetector = @get('pitchDetector')
-    cliplist = @get('cliplist')
+    console.log 'Stopping recording, adding clip'
+    clip = @get 'recordingDestination'
+    recorder = @get 'recorder'
+    pitchDetector = @get 'pitchDetector'
+    cliplist = @get 'cliplist'
+    minInterval = @get 'minInterval'
 
-    recorder.command('stop')
-    recorder.command('getBuffer', => # Get the recorded buffer from the recorder.
-      notes = pitchDetector.process(buffer) # Process the notes - NOTE: BLOCKING.
+    recorder.stop()
+    recorder.getBuffer( (buffer) => # Get the recorded buffer from the recorder.
+      notes = pitchDetector.convertToNotes(buffer, @get('tempo'), @get('minInterval')) # Process the notes - NOTE: BLOCKING.
       clip.set 'notes', notes # Give the notes to the clip.
       cliplist.add(clip) # Add the clip to the list.
+      if (notes.length / minInterval) > @get('maxTime') then @set('maxTime', notes.length / minInterval)
       @set 'recordingDestination', null # We are no longer recording to a clip.
-      recorder.command('clear') # Empty the recorder to save memory.
+      recorder.clear() # Empty the recorder to save memory.
+      cliplist.endRecording() # Trigger an event to update the view.
     )
 
 

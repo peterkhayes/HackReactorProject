@@ -11,3 +11,6 @@ class Tunesmith.Collections.ClipCollection extends Backbone.Collection
 
   stopRecordingAndAddClip: ->
     @trigger 'stopRecordingAndAddClip'
+
+  endRecording: ->
+    @trigger 'endRecording'

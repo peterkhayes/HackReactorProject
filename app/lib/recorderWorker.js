@@ -47,7 +47,7 @@ function record(inputBuffer){
 // }
 
 function getBuffer() {
-  this.postMessage(mergeBuffers(recBuffersL, recLength));
+  this.postMessage(mergeBuffers(recBuffers, recLength));
   this.clear()
 }
 

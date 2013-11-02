@@ -6,7 +6,7 @@ class Tunesmith.Views.ClipsView extends Backbone.View
 
   initialize: ->
     console.log "initialized clip view"
-    @collection.on('add', @render, @)
+    @collection.on('endRecording', @render, @)
 
   events: ->
     'click': 'processClick'
@@ -48,14 +48,13 @@ class Tunesmith.Views.ClipsView extends Backbone.View
     @$el
 
   renderRecorder: (type) ->
-    console.log "starting recording"
     clip = new Tunesmith.Models.ClipModel({type: type})
+    @collection.add(clip)
     clip.record()
     @$el.html Templates['selector_record']()
 
   endRecording: ->
     @$el.html Templates['selector_processing']()
     @collection.stopRecordingAndAddClip()
-    console.log "ending recording"
 
 
