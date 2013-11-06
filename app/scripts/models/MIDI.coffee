@@ -13,22 +13,31 @@ class Tunesmith.Models.MidiModel extends Backbone.Model
         cb()
     })
     @set 'noteEvents', []
+    @set('channels', {
+      Instrument: 0
+      Drum: 1
+    })
 
-  play: (channel, note) ->
+  play: (type, note) ->
+    #console.log note
     noteEvents = @get 'noteEvents'
+    channel = @get('channels')[type]
     MIDI.noteOn(channel, note.pitch, note.vel)
-    noteEvents.push({channel: channel, note:note})
+    noteEvents.push({channel: channel, pitch: note.pitch, len: note.len})
 
   advance: ->
     noteEvents = @get 'noteEvents'
     stillActive = []
-    for e, i in noteEvents
-      if e.note.len
-        e.note.len--
+    for e in noteEvents
+      if e.len
+        e.len--
         stillActive.push(e)
       else
-        MIDI.noteOff(e.channel, e.note.pitch)
+        MIDI.noteOff(e.channel, e.pitch)
     @set 'noteEvents', stillActive
+
+  typeToChannel: (type) ->
+    return [type]
 
 # Useful for testing midi events.
 # window.p = (channel, num) ->

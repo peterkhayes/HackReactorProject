@@ -6,13 +6,13 @@ class Tunesmith.Views.ClipsView extends Backbone.View
 
   initialize: ->
     console.log "initialized clip view"
-    @collection.on('endRecording', @render, @)
+    @collection.on('finishedRecording', @render, @)
+    @collection.on('showOptions', @renderOptions, @)
 
   events: ->
     'click': 'processClick'
 
   render: ->
-    console.log "rendering clip view"
     @$el.html ''
 
     # Put the add new button first.
@@ -28,33 +28,53 @@ class Tunesmith.Views.ClipsView extends Backbone.View
   processClick: (e) ->
     clicked = $(e.target)
 
-    # Clicking add new prompts the user to select a type of instrument to add.
     if clicked.hasClass "cancel"
       @render()
     else if clicked.hasClass "add"
       @renderSelector('type')
-    else if clicked.hasClass "instrument"
-      @renderRecorder('instrument')
-    else if clicked.hasClass "drum"
-      @renderRecorder('drum')
+    else if clicked.hasClass "Instrument"
+      @renderRecorder('Instrument')
+    else if clicked.hasClass "Drum"
+      @renderRecorder('Drum')
     else if clicked.hasClass "live"
       console.log "not yet you quicky!"
-      @render()
     else if clicked.hasClass "stop"
-      @endRecording()
+      @stopRecordingAndAddClip()
+    else if clicked.hasClass "rerecord"
+      @renderRerecorder()
+    else if clicked.hasClass "edit"
+      @renderEditor()
 
   renderSelector: (template) ->
     @$el.html Templates['selector_' + template]()
     @$el
 
   renderRecorder: (type) ->
-    clip = new Tunesmith.Models.ClipModel({type: type})
+    console.log 'rendering recorder'
+    clip = new Tunesmith.Models.ClipModel({type: type, notes: []})
     @collection.add(clip)
-    clip.record()
     @$el.html Templates['selector_record']()
+    clip.record()
 
-  endRecording: ->
+  stopRecordingAndAddClip: ->
     @$el.html Templates['selector_processing']()
     @collection.stopRecordingAndAddClip()
+
+  renderOptions: (clip) ->
+    @editTarget = clip
+    @$el.html Templates['selector_options'](clip.attributes)
+
+  renderRerecorder: ->
+    console.log 'rerecording'
+    @$el.html Templates['selector_record']()
+    @editTarget.clear()
+    @editTarget.record()
+    @editTarget = undefined
+
+  renderEditor: ->
+    console.log(@editTarget.get('notes'))
+    @editTarget = undefined
+    @render()
+
 
 

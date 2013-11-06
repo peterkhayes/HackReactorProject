@@ -15,16 +15,28 @@ class Tunesmith.Views.AppView extends Backbone.View
       @render()
     'click header .save': ->
       @model.save()
+      @render()
     'click header .load': ->
-      @model.load()
+      @model.load('mySong')
+      @render()
     'click header .export': ->
       @model.export()
+      @render()
 
   render: ->
     @$el.html ''
-    @$el.append(Templates["playback_grad"])
     @$el.append(Templates["menu_bar"]())
-    @$el.append(new Tunesmith.Views.PlaybackBarView({model: @model}).render())
+
+    @$el.append(new Tunesmith.Views.CurrentTabView({model: @model}).render())
+
+    playerView = new Tunesmith.Views.PlayerView({
+      collection: @model.get 'cliplist'
+      midi: @model.get 'midi'
+    })
+    @model.get('pitchDetector').set('player', playerView)
+    @$el.append(playerView.render())
+
     @$el.append(new Tunesmith.Views.ClipsView({collection: @model.get('cliplist')}).render())
+
     @$el
 

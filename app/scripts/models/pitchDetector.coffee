@@ -21,19 +21,29 @@ class Tunesmith.Models.PitchDetectorModel extends Backbone.Model
     pitches = []
     pitch = @get 'pitch'
     for chunk in chunks
+      ac_tone = detectPitch(chunk)
       pitch.input(chunk)
       pitch.process()
       tone = pitch.findTone() or {freq: 0, db: -90}
-      pitches.push {pitch: @getNote(tone.freq), vel: 2*(tone.db + 90), len: 1}
+      pitches.push {pitch: @getNote(tone.freq), vel: 2*(tone.db + 90), len: 1, ac: @getNote(ac_tone)}
     pitches
 
   merge: (notes) ->
+    sustained = notes[0]
     for note, i in notes
-      if prev and prev.pitch == note.pitch
-        prev.len++
+      #prev = notes[i-1]
+      if sustained and sustained.pitch > 0 and note.ac > 20 and note.pitch == 0
+        note.pitch = sustained.pitch
+
+      if note.pitch == sustained.pitch
         note.pitch = 0
-      else
-        prev = note
+        sustained.len++
+
+      if note.pitch != sustained and note.pitch != 0
+        sustained = note
+      # console.log sustained
+      # console.log notes[i-1]
+      # console.log "---"
     notes
 
   standardizeClipLength: (notes, minInterval) ->
@@ -49,10 +59,12 @@ class Tunesmith.Models.PitchDetectorModel extends Backbone.Model
 
     notes
 
-  convertToNotes: (buffer, tempo, minInterval) ->
+  convertToNotes: (buffer) ->
+    tempo = @get('player').tempo
+    minInterval = @get('player').minInterval
+
     chunks = @chunk(buffer, tempo, minInterval)
     pitches = @convertToPitches(chunks)
     merged = @merge(pitches)
     stdzd = @standardizeClipLength(merged, minInterval)
-    console.log stdzd
     return stdzd

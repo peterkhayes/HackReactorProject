@@ -4,37 +4,14 @@ class Tunesmith.Models.AppModel extends Backbone.Model
 
   initialize: ->
     cliplist = new Tunesmith.Collections.ClipCollection()
-    cliplist.on('note', @playNote, @)
     cliplist.on('record', @record, @)
     cliplist.on('stopRecordingAndAddClip', @stopRecordingAndAddClip, @)
-
     @set 'cliplist', cliplist
-    @set 'minInterval', 8
-    @set 'tempo', 120
-    @set 'maxTime', 8*@get('minInterval')
-    @set 'currentTime', 0
     @set 'recordingDestination', null
 
-    @metronome = setInterval(@advance, 60000 / @get('tempo') / @get('minInterval'))
-    console.log @get('midi'), @get('recorder'), @get('pitchDetector')
-
-  advance: =>
-    @set('currentTime', (@get('currentTime') + 1) % @get('maxTime'))
-    @get('cliplist').play(@get('currentTime'))
-    @get('midi').advance()
-
-    @trigger('advance')
-    if ((@get('currentTime') % @get('minInterval')) == 0)
-      @trigger('tick')
-
-  # Returns a percent.
-  progress: =>
-    @get('currentTime')*100/@get('maxTime')
-
-  playNote: (e) =>
-    @get('midi').play(e.channel, e.note)
-
   record: (clip) ->
+    console.log 'recording'
+    console.log @get('recorder')
     @set 'currentTime', 0
     @set 'recordingDestination', clip
     @get('recorder').record()
@@ -49,14 +26,37 @@ class Tunesmith.Models.AppModel extends Backbone.Model
 
     recorder.stop()
     recorder.getBuffer( (buffer) => # Get the recorded buffer from the recorder.
-      notes = pitchDetector.convertToNotes(buffer, @get('tempo'), @get('minInterval')) # Process the notes - NOTE: BLOCKING.
+      notes = pitchDetector.convertToNotes(buffer) # Process the notes - NOTE: BLOCKING.
       clip.set 'notes', notes # Give the notes to the clip.
-      cliplist.add(clip) # Add the clip to the list.
       if (notes.length / minInterval) > @get('maxTime') then @set('maxTime', notes.length / minInterval)
       @set 'recordingDestination', null # We are no longer recording to a clip.
       recorder.clear() # Empty the recorder to save memory.
-      cliplist.endRecording() # Trigger an event to update the view.
+      cliplist.finishedRecording() # Trigger an event to update the view.
     )
 
+  save: (title) ->
+    cliplist = @get 'cliplist'
+    data = {
+      tempo: @get 'tempo'
+      clips: []
+    }
+    cliplist.each( (clip) ->
+      data.clips.push({
+        notes: clip.get('notes'),
+        type: clip.get('type')
+      })
+    )
+    console.log data
+    # $.post({
+    #   url: "songs/#{title}"
+    #   data: data
+    # })
 
+  load: (title) ->
+    toLoad = Tunesmith.songs[title]
+    cliplist = new Tunesmith.Collections.ClipCollection()
+    for clip in toLoad.clips
+      cliplist.add(new Tunesmith.Models.ClipModel({type: clip.type, notes: clip.notes}))
+    @set('cliplist', cliplist)
+    @set('tempo', toLoad.tempo)
 

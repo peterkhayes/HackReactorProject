@@ -6,11 +6,14 @@ window.Tunesmith =
   init: ->
     'use strict'
 
-    loading = 0
+    loaded = 0
+    loadingView = new Tunesmith.Views.LoadingView({el: '#container'})
+    loadingView.render(loaded)
 
     componentLoaded = =>
-      loading++
-      if loading == 3
+      loaded++
+      loadingView.render(loaded)
+      if loaded == 3
         appModel = new Tunesmith.Models.AppModel({
           midi: midi
           recorder: recorder
@@ -29,3 +32,14 @@ window.Tunesmith =
 $ ->
   'use strict'
   Tunesmith.init();
+  Tunesmith.songs = {
+    mySong: {
+      tempo: 160
+      clips: [
+        {
+          notes: [{pitch: 64, len: 4, vel: 96}, {pitch:0, len: 0, vel:0}, {pitch:0, len: 0, vel:0}, {pitch:0, len: 0, vel:0}]
+          type: "Instrument"
+        }
+      ]
+    }
+  }
