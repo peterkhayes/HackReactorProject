@@ -14,6 +14,7 @@ class Tunesmith.Views.ClipView extends Backbone.View
 
   render: ->
     attrs = @model.attributes
+    attrs.Type = @capitalizeFirst(attrs.type)
     @$el.html(Templates['clip'](attrs))
     @$el
 
@@ -23,3 +24,6 @@ class Tunesmith.Views.ClipView extends Backbone.View
 
   unflash: =>
     @$el.removeClass('flash');
+
+  capitalizeFirst: (str) ->
+    return str.charAt(0).toUpperCase() + str.slice(1)

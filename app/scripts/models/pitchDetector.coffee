@@ -39,7 +39,7 @@ class Tunesmith.Models.PitchDetectorModel extends Backbone.Model
       if next and (sustained.pitch > 0) and (sustained.pitch == next.pitch)
         note.pitch = sustained.pitch
 
-      if next and dnext and (15 > note.pitch - sustained.pitch > 7) and (15 > note.pitch - next.pitch > 7) and (15 > note.pitch - dnext.pitch > 7)
+      if next and (15 > note.pitch - sustained.pitch > 7) and (15 > note.pitch - next.pitch > 7) and (15 > note.pitch - dnext.pitch > 7)
         note.pitch -= 12
 
       if next and dnext and (Math.abs(note.pitch - next.pitch) == 1) and (Math.abs(note.pitch - dnext.pitch) == 1)
@@ -69,10 +69,7 @@ class Tunesmith.Models.PitchDetectorModel extends Backbone.Model
 
     notes
 
-  convertToNotes: (buffer) ->
-    tempo = @get('player').tempo
-    minInterval = @get('player').minInterval
-
+  convertToNotes: (buffer, tempo, minInterval) ->
     chunks = @chunk(buffer, tempo, minInterval)
     pitches = @convertToPitches(chunks)
     merged = @merge(pitches)

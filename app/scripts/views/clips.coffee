@@ -18,7 +18,6 @@ class Tunesmith.Views.ClipsView extends Backbone.View
     @$el.html ''
 
     # Attach a current-tab, which keeps track of what's going on.
-
     @$el.append(@currentTab.render())
 
     # Put the add new button first.
@@ -59,10 +58,10 @@ class Tunesmith.Views.ClipsView extends Backbone.View
   renderRecorder: (type) ->
     console.log 'rendering recorder'
     clip = new Tunesmith.Models.ClipModel({type: type, notes: []})
-    @collection.add(clip)
     @$el.html Templates['selector_record']()
     @$el.append(@currentTab.render('Recording...'))
-    clip.record()
+    @collection.add(clip)
+    @collection.record(clip)
 
   stopRecordingAndAddClip: ->
     @$el.html Templates['selector_processing']()
@@ -74,13 +73,12 @@ class Tunesmith.Views.ClipsView extends Backbone.View
     @$el.html Templates['selector_options'](clip.attributes)
     @$el.append(@currentTab.render("Options for #{clip.get('type')}"))
 
-
   renderRerecorder: ->
     console.log 'rerecording'
     @$el.html Templates['selector_record']()
     @$el.append(@currentTab.render("Rerecording #{@editTarget.get('type')}"))
     @editTarget.clear()
-    @editTarget.record()
+    @collection.record(@editTarget)
     @editTarget = undefined
 
   renderEditor: ->

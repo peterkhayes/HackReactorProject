@@ -23,20 +23,12 @@ class Tunesmith.Views.AppView extends Backbone.View
       @model.export()
       @render()
 
-  setupPlayer: ->
-    @player.collection = @model.get 'cliplist'
-    @player.midi = @model.get 'midi'
-    @model.get('pitchDetector').set('player', @player)
-    @player.start()
 
   render: ->
     @$el.html ''
     @$el.append(Templates["menu_bar"]())
 
-    @player = new Tunesmith.Views.PlayerView()
-    @setupPlayer()
-    @$el.append(@player.render())
-
+    @$el.append(new Tunesmith.Views.PlayerView({collection: @model.get('cliplist')}).render())
     @$el.append(new Tunesmith.Views.ClipsView({collection: @model.get('cliplist')}).render())
 
     @$el

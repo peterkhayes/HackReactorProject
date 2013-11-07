@@ -19,7 +19,6 @@ class Tunesmith.Models.MidiModel extends Backbone.Model
     })
 
   play: (type, note) ->
-    #console.log note
     noteEvents = @get 'noteEvents'
     channel = @get('channels')[type]
     MIDI.noteOn(channel, note.pitch, note.vel)
