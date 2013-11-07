@@ -31,9 +31,19 @@ class Tunesmith.Models.PitchDetectorModel extends Backbone.Model
   merge: (notes) ->
     sustained = notes[0]
     for note, i in notes
-      #prev = notes[i-1]
-      if sustained and sustained.pitch > 0 and note.ac > 20 and note.pitch == 0
+      next = notes[i+1]
+      dnext = notes[i+2]
+      if sustained and (sustained.pitch > 0) and (note.ac > 20) and (note.pitch == 0)
         note.pitch = sustained.pitch
+
+      if next and (sustained.pitch > 0) and (sustained.pitch == next.pitch)
+        note.pitch = sustained.pitch
+
+      if next and dnext and (15 > note.pitch - sustained.pitch > 7) and (15 > note.pitch - next.pitch > 7) and (15 > note.pitch - dnext.pitch > 7)
+        note.pitch -= 12
+
+      if next and dnext and (Math.abs(note.pitch - next.pitch) == 1) and (Math.abs(note.pitch - dnext.pitch) == 1)
+        note.pitch = next.pitch
 
       if note.pitch == sustained.pitch
         note.pitch = 0

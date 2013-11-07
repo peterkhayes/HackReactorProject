@@ -113,6 +113,14 @@ button
   gradient: darken(bg_color, 20%), lighten(bg_color, 20%)
   z-index: -2
 
+.loading
+  color: #F0F0F0
+  margin: 150px auto
+  text-align: center
+
+audio
+  display: none
+
 header
   gradient: darken(header_color, 20%), lighten(header_color, 20%)
   width: 100%
@@ -199,4 +207,9 @@ button.selector p, button.clip p
     margin-left: -400px;
   &.playback
     margin-left: 250px;
+
+.tempo
+  margin: 0 10px
+  &.up, &.down
+    cursor: pointer
 

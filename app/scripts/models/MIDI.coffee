@@ -14,8 +14,8 @@ class Tunesmith.Models.MidiModel extends Backbone.Model
     })
     @set 'noteEvents', []
     @set('channels', {
-      Instrument: 0
-      Drum: 1
+      instrument: 0
+      drum: 1
     })
 
   play: (type, note) ->

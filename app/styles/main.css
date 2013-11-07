@@ -12,6 +12,8 @@ button{border:0;outline:0;background:none}
 .red{color:#f00}
 .clearfix:after{visibility:hidden;display:block;font-size:0;content:" ";clear:both;height:0}
 #background{position:fixed;top:0;left:0;width:100%;height:100%;background:#03ccff;background:-moz-linear-gradient(-45deg,#03ccff 0%,#69e1ff 100%);background:-webkit-gradient(linear,left top,right bottom,color-stop(0%,#03ccff),color-stop(100%,#69e1ff));background:-webkit-linear-gradient(-45deg,#03ccff 0%,#69e1ff 100%);background:-o-linear-gradient(-45deg,#03ccff 0%,#69e1ff 100%);background:-ms-linear-gradient(-45deg,#03ccff 0%,#69e1ff 100%);background:linear-gradient(135deg,#03ccff 0%,#69e1ff 100%);z-index:-2}
+.loading{color:#f0f0f0;margin:150px auto;text-align:center}
+audio{display:none}
 header{background:#0036a3;background:-moz-linear-gradient(-45deg,#0036a3 0%,#0a5cff 100%);background:-webkit-gradient(linear,left top,right bottom,color-stop(0%,#0036a3),color-stop(100%,#0a5cff));background:-webkit-linear-gradient(-45deg,#0036a3 0%,#0a5cff 100%);background:-o-linear-gradient(-45deg,#0036a3 0%,#0a5cff 100%);background:-ms-linear-gradient(-45deg,#0036a3 0%,#0a5cff 100%);background:linear-gradient(135deg,#0036a3 0%,#0a5cff 100%);width:100%;position:fixed;left:0;top:0}
 header button{color:#f9f9f9;background-color:rgba(255,255,255,0);display:inline-block;cursor:pointer;padding:10px 25px;}
 header button:hover{background-color:rgba(255,255,255,0.2)}
@@ -42,3 +44,5 @@ button.selector p,button.clip p{margin-top:-5px}
 .tab{z-index:-1;position:absolute;background-color:#e4e4e4;top:80px;border-radius:10px;-moz-border-radius:10px;-webkit-border-radius:10px;height:40px;padding:10px;border:1px solid #000;left:50%;}
 .tab.current{margin-left:-400px}
 .tab.playback{margin-left:250px}
+.tempo{margin:0 10px;}
+.tempo.up,.tempo.down{cursor:pointer}

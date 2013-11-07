@@ -38,7 +38,7 @@ $ ->
       clips: [
         {
           notes: [{pitch: 64, len: 4, vel: 96}, {pitch:0, len: 0, vel:0}, {pitch:0, len: 0, vel:0}, {pitch:0, len: 0, vel:0}]
-          type: "Instrument"
+          type: "instrument"
         }
       ]
     }

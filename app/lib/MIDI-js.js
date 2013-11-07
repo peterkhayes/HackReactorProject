@@ -92,7 +92,7 @@ MIDI.loadPlugin = function(conf) {
 		return data;		
 	});
 	///
-	MIDI.soundfontUrl = conf.soundfontUrl || MIDI.soundfontUrl || "./soundfont/";
+	MIDI.soundfontUrl = "./audio/soundfont/";
 	/// Detect the best type of audio to use.
 	MIDI.audioDetect(function(types) {
 		var type = "";
