@@ -16,7 +16,9 @@ class Tunesmith.Views.PlayerView extends Backbone.View
       tock: tock
     }
 
-    @collection.on('note', (e) => @midi.play(e.type, e.note))
+    @collection.on('note', (e) =>
+      @collection.tools('midi').play(e.type, e.note)
+    , @)
     @advance()
 
   events: ->
@@ -31,8 +33,8 @@ class Tunesmith.Views.PlayerView extends Backbone.View
     @collection.play(currentTime)
     @collection.tools('midi').advance()
 
-    if (@collection.params('currentTime') % @collection.params('minInterval')) == 0
-      @playSound(if @collection.params('currentTime') % (4 * @collection.params('minInterval')) then 'tick' else 'tock')
+    # if (@collection.params('currentTime') % @collection.params('minInterval')) == 0
+    #   @playSound(if @collection.params('currentTime') % (4 * @collection.params('minInterval')) then 'tick' else 'tock')
 
     setTimeout(@advance, 60000 / @collection.params('tempo') / @collection.params('minInterval'))
 

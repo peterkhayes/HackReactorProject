@@ -5,10 +5,6 @@ class Tunesmith.Models.RecorderModel extends Backbone.Model
 
   initialize: (cb) ->
     try
-      #webkit shim
-      window.AudioContext = window.AudioContext or window.webkitAudioContext
-      navigator.getUserMedia = navigator.getUserMedia or navigator.webkitGetUserMedia
-      window.URL = window.URL or window.webkitURL
       audio_context = new AudioContext
     catch e
       alert 'No web audio support in this browser!'
