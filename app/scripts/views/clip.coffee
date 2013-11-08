@@ -2,10 +2,6 @@
 
 class Tunesmith.Views.ClipView extends Backbone.View
 
-  tagName: 'button'
-
-  className: 'clip'
-
   initialize: ->
     @model.on('note', @flash, @)
 
@@ -13,9 +9,11 @@ class Tunesmith.Views.ClipView extends Backbone.View
     'click': -> @model.trigger('showOptions', @model)
 
   render: ->
-    attrs = @model.attributes
-    attrs.Type = @capitalizeFirst(attrs.type)
-    @$el.html(Templates['clip'](attrs))
+    @$el.html(Templates['selector']({
+      name: @capitalizeFirst(@model.get('type'))
+      type: clip
+      image: @model.get('type')
+    })
     @$el
 
   flash: =>

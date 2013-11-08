@@ -5,14 +5,8 @@ class Tunesmith.Collections.ClipCollection extends Backbone.Collection
   model: Tunesmith.Models.ClipModel
 
   initialize: ->
+    @resetParams()
     @_tools = {}
-    @_params = {
-      tempo: 120
-      minInterval: 8
-      currentTime: 0
-      maxTime: 64
-      recordingDestination: null
-    }
 
     @on('record', @record)
     console.log @
@@ -36,6 +30,7 @@ class Tunesmith.Collections.ClipCollection extends Backbone.Collection
 
   record: (clip) ->
     console.log 'Recording'
+    @_tools.midi.loadInstrument(clip.get('type'))
     @_params.currentTime = 0
     @_params.recordingDestination = clip
     @_tools.recorder.record()
@@ -52,3 +47,12 @@ class Tunesmith.Collections.ClipCollection extends Backbone.Collection
       @_tools.recorder.clear() # Empty the recorder to save memory.
       @trigger 'finishedRecording' # Trigger an event to update the view.
     )
+
+  resetParams: ->
+    @_params = {
+      tempo: 120
+      minInterval: 4
+      currentTime: 0
+      maxTime: 32
+      recordingDestination: null
+    }

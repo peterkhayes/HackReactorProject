@@ -12,5 +12,4 @@ class Tunesmith.Models.ClipModel extends Backbone.Model
     if (notes and notes.length)
       note = notes[time % notes.length]
       if (note and note.pitch)
-        console.log note
         @trigger('note', {type: @get('type'), note: note})

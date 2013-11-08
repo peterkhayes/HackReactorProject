@@ -8,28 +8,27 @@ class Tunesmith.Views.AppView extends Backbone.View
 
   events: ->
     'click header .newSong': ->
-      @model.initialize()
+      @model.newSong()
       @render()
     'click header .newSection': ->
       @model.newSection()
       @render()
     'click header .save': ->
       @model.save()
-      @render()
     'click header .load': ->
       @model.load('mySong')
       @render()
     'click header .export': ->
       @model.export()
-      @render()
-
 
   render: ->
     @$el.html ''
+    @playerView = new Tunesmith.Views.PlayerView({collection: @model.get('cliplist')})
+    @clipsView = new Tunesmith.Views.ClipsView({collection: @model.get('cliplist')})
     @$el.append(Templates["menu_bar"]())
 
-    @$el.append(new Tunesmith.Views.PlayerView({collection: @model.get('cliplist')}).render())
-    @$el.append(new Tunesmith.Views.ClipsView({collection: @model.get('cliplist')}).render())
+    @$el.append(@playerView.render())
+    @$el.append(@clipsView.render())
 
     @$el
 

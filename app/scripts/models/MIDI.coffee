@@ -7,32 +7,62 @@ class Tunesmith.Models.MidiModel extends Backbone.Model
     context = new window.AudioContext()
 
     instruments = {
-      drum: {
-        notes: [1, 2, 3, 4]
+      hiphop_kit: {
+        drum: true
+        notes: [1, 2, 3]
+      }
+      live_kit: {
+        drum: true
+        notes:[1, 2, 3]
+      }
+      electronic_kit: {
+        drum: true
+        notes: [1, 2, 3]
       }
       piano: {
         notes: [39, 44, 49, 54, 59, 64, 69, 74]
       }
+      e_guitar: {
+        notes: []
+      }
+      a_guitar: {
+        notes: []
+      }
+      bass: {
+        notes: []
+      }
+      synth: {
+        notes: []
+      }
+      sax: {
+        notes: []
+      }
+      strings: {
+        notes: []
+      }
     }
-
-    # Load each instrument i in instruments.
-    for i of instruments
-      instruments[i].buffers = []
-      for note, j in instruments[i].notes
-        @loadBuffer("audio/#{i}/#{note}.mp3", instruments[i].buffers, j, context)
 
     @set 'instruments', instruments
     @set 'context', context
     @set 'noteEvents', []
     cb()
 
-  loadBuffer: (url, destination, i, context) ->
+  # Load an instrument in the background.
+  loadInstrument: (name) ->
+    console.log "attempting to load #{name}"
+    instrument = @get('instruments')[name]
+    unless instrument.buffers
+      instrument.buffers = []
+      for note, i in instrument.notes
+          @loadBuffer("audio/#{name}/#{note}.mp3", instrument.buffers, i)
+
+  loadBuffer: (url, destination, i) ->
     request = new XMLHttpRequest()
     request.open("GET", url, true)
     request.responseType = "arraybuffer"
 
-    request.onload = () ->
-      context.decodeAudioData(
+    request.onload = () =>
+      @get('context').decodeAudioData(
         request.response,
         (buffer) ->
           if (!buffer)
@@ -49,7 +79,6 @@ class Tunesmith.Models.MidiModel extends Backbone.Model
     request.send()
 
   play: (type, note) ->
-    type = 'piano'
     context = @get('context')
 
     # First we find the closest note that we have a sample for.
@@ -61,10 +90,12 @@ class Tunesmith.Models.MidiModel extends Backbone.Model
       index++
     # See whether the sample above or the sample below is closer.
     if (notes[index] - note.pitch) > (note.pitch - notes[index-1]) then index--
-    console.log "choosing pitch #{notes[index]}"
 
     # Make a source node with the correct audio.
     source = context.createBufferSource();
+    unless instruments[type].buffers
+      console.log "instrument not loaded yet"
+      return
     source.buffer = instruments[type].buffers[index]
     # Pitch shift the playback and play!
     source.playbackRate.value = Math.pow(2,(note.pitch - notes[index])/12)
@@ -72,7 +103,6 @@ class Tunesmith.Models.MidiModel extends Backbone.Model
     source.connect(context.destination);
     source.noteOn(0)
 
-    console.log source
 
     # Push the node into our events loop so we can end it later.
     @get('noteEvents').push({source: source, len: note.len})

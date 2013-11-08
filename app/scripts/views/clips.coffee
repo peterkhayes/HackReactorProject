@@ -16,12 +16,11 @@ class Tunesmith.Views.ClipsView extends Backbone.View
 
   render: ->
     @$el.html ''
-
     # Attach a current-tab, which keeps track of what's going on.
     @$el.append(@currentTab.render())
 
     # Put the add new button first.
-    @$el.append(Templates['button_add_new']());
+    @$el.append(Templates['selector']({name: "Add Track", type: "add", image: "record"}));
 
     # Then append any clips we've created.
     @collection.each( (clip) =>
@@ -36,11 +35,19 @@ class Tunesmith.Views.ClipsView extends Backbone.View
     if clicked.hasClass "cancel"
       @render()
     else if clicked.hasClass "add"
-      @renderSelector('type')
-    else if clicked.hasClass "instrument"
-      @renderRecorder('instrument')
-    else if clicked.hasClass "drum"
-      @renderRecorder('drum')
+      @renderSelector('type', "Choose which type of clip.")
+
+
+    else if clicked.hasClass "instruments"
+      @renderRecorder('piano')
+    else if clicked.hasClass "drums"
+      @renderRecorder('hiphop_kit')
+    # else if clicked.hasClass "instruments"
+    #   @renderSelector('instruments')
+    # else if clicked.hasClass "drums"
+    #   @renderSelector('drums')
+    # else if clicked.hasClass 'instrument'
+    #   @renderRecorder(clicked.attr('instrument'))
     else if clicked.hasClass "live"
       console.log "not yet you quicky!"
     else if clicked.hasClass "stop"
@@ -50,9 +57,9 @@ class Tunesmith.Views.ClipsView extends Backbone.View
     else if clicked.hasClass "edit"
       @renderEditor()
 
-  renderSelector: (template) ->
-    @$el.html Templates['selector_' + template]()
-    @$el.append(@currentTab.render("Choose #{template} to insert."))
+  renderSelector: (template, message) ->
+    @$el.html Templates['selector']()
+    @$el.append(@currentTab.render(message))
     @$el
 
   renderRecorder: (type) ->
@@ -67,6 +74,7 @@ class Tunesmith.Views.ClipsView extends Backbone.View
     @$el.html Templates['selector_processing']()
     @$el.append(@currentTab.render('Working...'))
     @collection.stopRecordingAndAddClip()
+
 
   renderOptions: (clip) ->
     @editTarget = clip

@@ -9,10 +9,14 @@ class Tunesmith.Models.AppModel extends Backbone.Model
     cliplist.tools('pitchDetector', @get('pitchDetector'))
     @set('cliplist', cliplist)
 
+  newSong: ->
+    @get('cliplist').resetParams()
+    @get('cliplist').reset()
+
   save: (title) ->
     cliplist = @get 'cliplist'
     data = {
-      tempo: @get 'tempo'
+      tempo: cliplist.get 'tempo'
       clips: []
     }
     cliplist.each( (clip) ->
@@ -22,6 +26,7 @@ class Tunesmith.Models.AppModel extends Backbone.Model
       })
     )
     console.log data
+    Tunesmith.songs[title] = data
     # $.post({
     #   url: "songs/#{title}"
     #   data: data
@@ -34,4 +39,3 @@ class Tunesmith.Models.AppModel extends Backbone.Model
       cliplist.add(new Tunesmith.Models.ClipModel({type: clip.type, notes: clip.notes}))
     @set('cliplist', cliplist)
     @set('tempo', toLoad.tempo)
-
