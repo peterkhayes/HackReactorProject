@@ -3,7 +3,16 @@
 class Tunesmith.Views.AppView extends Backbone.View
 
   initialize: ->
-    console.log "intialized app view."
+    @playerView = new Tunesmith.Views.PlayerView({collection: @model.get('cliplist')})
+    @clipsView = new Tunesmith.Views.ClipsView({collection: @model.get('cliplist')})
+
+    @menuBarView = new Tunesmith.Views.MenuBarView({model: @model})
+    @authView = new Tunesmith.Views.LoginView({model: @model})
+    @saveView = new Tunesmith.Views.SaveView({model: @model})
+    @loadView = new Tunesmith.Views.LoadView({model: @model})
+
+    @model.on('authSuccess', @menuBarView.render, @menuBarView)
+
     @render()
 
   events: ->
@@ -14,21 +23,25 @@ class Tunesmith.Views.AppView extends Backbone.View
       @model.newSection()
       @render()
     'click header .save': ->
-      @model.save()
+      @saveView.render()
     'click header .load': ->
-      @model.load('mySong')
-      @render()
+      @loadView.render()
     'click header .export': ->
       @model.export()
+    'click header .login': ->
+      @authView.render('login')
+    'click header .signup': ->
+      @authView.render('signup')
+    'click header .logout': ->
+      @model.logout()
+      @menuBarView.render()
 
   render: ->
     @$el.html ''
-    @playerView = new Tunesmith.Views.PlayerView({collection: @model.get('cliplist')})
-    @clipsView = new Tunesmith.Views.ClipsView({collection: @model.get('cliplist')})
-    @$el.append(Templates["menu_bar"]())
 
     @$el.append(@playerView.render())
     @$el.append(@clipsView.render())
+    @$el.append(@menuBarView.render())
 
     @$el
 

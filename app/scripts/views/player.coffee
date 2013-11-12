@@ -5,17 +5,6 @@ class Tunesmith.Views.PlayerView extends Backbone.View
   className: "tab playback"
 
   initialize: (params) ->
-    tick = new Audio("audio/tick.mp3")
-    tick.preload = 'auto'
-    tick.load()
-    tock = new Audio("audio/tock.mp3")
-    tock.preload = 'auto'
-    tock.load()
-    @sounds = {
-      tick: tick
-      tock: tock
-    }
-
     @collection.on('note', (e) =>
       @collection.tools('midi').play(e.type, e.note)
     , @)
@@ -33,8 +22,9 @@ class Tunesmith.Views.PlayerView extends Backbone.View
     @collection.play(currentTime)
     @collection.tools('midi').advance()
 
-    # if (@collection.params('currentTime') % @collection.params('minInterval')) == 0
-    #   @playSound(if @collection.params('currentTime') % (4 * @collection.params('minInterval')) then 'tick' else 'tock')
+    if (@collection.params('currentTime') % @collection.params('minInterval')) == 0
+      step = (@collection.params('currentTime') % (4*@collection.params('minInterval')))/4
+      @collection.tools('metronome').tick(step)
 
     setTimeout(@advance, 60000 / @collection.params('tempo') / @collection.params('minInterval'))
 

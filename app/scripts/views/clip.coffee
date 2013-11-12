@@ -9,11 +9,12 @@ class Tunesmith.Views.ClipView extends Backbone.View
     'click': -> @model.trigger('showOptions', @model)
 
   render: ->
-    @$el.html(Templates['selector']({
-      name: @capitalizeFirst(@model.get('type'))
-      type: clip
+    @$el = $(Templates['selector']({
+      name: @capitalizeFirst(@model.get('type')),
+      command: 'editClip',
       image: @model.get('type')
-    })
+    }))
+    @$el.addClass('clip')
     @$el
 
   flash: =>

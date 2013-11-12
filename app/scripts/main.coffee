@@ -14,11 +14,12 @@ window.Tunesmith =
     componentLoaded = =>
       loaded++
       loadingView.render(loaded)
-      if loaded == 3
+      if loaded == 4
         appModel = new Tunesmith.Models.AppModel({
           midi: midi
           recorder: recorder
           pitchDetector: pitchDetector
+          metronome: metronome
         })
 
         app = new Tunesmith.Views.AppView({
@@ -31,10 +32,16 @@ window.Tunesmith =
     navigator.getUserMedia = navigator.getUserMedia or navigator.webkitGetUserMedia
     window.URL = window.URL or window.webkitURL
 
+    try
+      audioContext = new window.AudioContext()
+    catch e
+      alert 'No web audio support in this browser!'
+
     # Load our three pre-loading components.
-    midi = new Tunesmith.Models.MidiModel(componentLoaded)
-    recorder = new Tunesmith.Models.RecorderModel(componentLoaded)
-    pitchDetector = new Tunesmith.Models.PitchDetectorModel(componentLoaded)
+    midi = new Tunesmith.Models.MidiModel(componentLoaded, audioContext)
+    recorder = new Tunesmith.Models.RecorderModel(componentLoaded, audioContext)
+    pitchDetector = new Tunesmith.Models.PitchDetectorModel(componentLoaded, audioContext)
+    metronome = new Tunesmith.Models.MetronomeModel(componentLoaded, audioContext)
 
     # Useful for testing midi events.
     window.p = (num) =>

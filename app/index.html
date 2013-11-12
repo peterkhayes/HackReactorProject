@@ -23,6 +23,7 @@
         <![endif]-->
 
         <div id='background'></div>
+        <div id='greyout'></div>
         <div id='container'></div>
 
         <!-- Google Analytics: change UA-XXXXX-X to be your site's ID. -->
@@ -41,12 +42,12 @@
         <script src="bower_components/backbone/backbone.js"></script>
         <script src="bower_components/handlebars/handlebars.js"></script>
         <script src="lib/Base64Binary.js"></script>
-        <script src="lib/MIDI-js.js"></script>
         <script src="lib/fft.js"></script>
         <script src="lib/pitch.js"></script>
         <script src="lib/recorder.js"></script>
         <script src="lib/detectpitch.js"></script>
-
+        <script src="lib/firebase.js"></script>
+        <script src="lib/firebase-simple-login.js"></script>
         <!-- endbuild -->
 
         <!-- build:js({.tmp,app}) scripts/main.js -->
@@ -62,12 +63,16 @@
         <script src="scripts/views/clip.js"></script>
         <script src="scripts/collections/clips.js"></script>
         <script src="scripts/views/clips.js"></script>
-        <script src="scripts/views/playbackBar.js"></script>
         <script src="scripts/views/loading.js"></script>
         <script src="scripts/models/metronome.js"></script>
         <script src="scripts/views/current_tab.js"></script>
         <script src="scripts/views/playback_tab.js"></script>
         <script src="scripts/views/player.js"></script>
+        <script src="scripts/views/metronome.js"></script>
+        <script src="scripts/views/auth.js"></script>
+        <script src="scripts/views/menuBar.js"></script>
+        <script src="scripts/views/save.js"></script>
+        <script src="scripts/views/load.js"></script>
         <!-- endbuild -->
 </body>
 </html>

@@ -3,20 +3,16 @@
 # Controls the midi-js library.
 class Tunesmith.Models.MidiModel extends Backbone.Model
 
-  initialize: (cb) =>
-    context = new window.AudioContext()
+  initialize: (cb, context) =>
 
     instruments = {
       hiphop_kit: {
-        drum: true
         notes: [1, 2, 3]
       }
       live_kit: {
-        drum: true
         notes:[1, 2, 3]
       }
       electronic_kit: {
-        drum: true
         notes: [1, 2, 3]
       }
       piano: {

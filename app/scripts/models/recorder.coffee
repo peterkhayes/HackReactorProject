@@ -3,15 +3,11 @@
 # Controls the recorder-js model.
 class Tunesmith.Models.RecorderModel extends Backbone.Model
 
-  initialize: (cb) ->
-    try
-      audio_context = new AudioContext
-    catch e
-      alert 'No web audio support in this browser!'
+  initialize: (cb, context) ->
 
     navigator.getUserMedia({audio: true},
       (stream) => # Successfully connected to microphone.
-        input = audio_context.createMediaStreamSource(stream)
+        input = context.createMediaStreamSource(stream)
 
         @set 'recorder', new Recorder(input)
         cb()

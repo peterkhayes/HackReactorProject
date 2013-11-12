@@ -113,9 +113,70 @@ button
   gradient: darken(bg_color, 20%), lighten(bg_color, 20%)
   z-index: -2
 
+#greyout
+  position:fixed
+  top: 0
+  left: 0
+  width: 100%
+  height: 100%
+  z-index: 1
+  opacity: 0.2
+  display: none
+  background-color: #242264
+
+.authPopup
+  position: fixed
+  top: 50%
+  left: 50%
+  width: 500px
+  height: 300px
+  margin-left: -250px;
+  margin-top: -150px;
+  z-index: 2
+  padding 20px
+  gradient(lighten(clip_list_color, 10%), lighten(clip_list_color, 50%))
+  border std_border
+  border-radius 10px
+  box-shadow: 5px 5px 5px #666
+  h2
+    margin: 15px 10px
+  .close
+    position: absolute
+    right: 10px
+    top: 10px
+    color: #B11
+    font-size: 36px
+    cursor: pointer
+    &:hover
+      color: lighten(@color, 20%)
+  input
+    padding: 10px
+    font-size: 20px
+    margin: 15px
+  .submit
+    font-size: 18px
+    border: std_border
+    border-radius: 5px
+    background-color: blue
+    margin: 10px
+    padding: 10px
+    color: #F0F0F0
+    cursor: pointer
+    &:hover
+      background-color lighten(@background-color, 20%)
+  .swap
+    cursor: pointer
+    text-decoration: underline
+    color: green
+    &:hover
+      color lighten(@color, 20%)
+  .error
+    color: #F66
+
+
 .loading
   color: #F0F0F0
-  margin: 150px auto
+  margin: 100px auto
   text-align: center
 
 audio
@@ -138,9 +199,11 @@ header button
   &:hover
     background-color: rgba(256, 256, 256, 0.2)
   &.left
+    float: left
     border-right: 1px solid lighten(header_color, 15%)
   &.right
-    border-left: 1px solid lighten(header_color, 15%)
+    float: right
+    border-left: 1px solid lighten(header_color, 25%)
 
 .clips
   margin clip_list_top_margin auto
@@ -152,7 +215,7 @@ header button
   box-shadow: 5px 5px 5px #666
   color: #111
 
-button.selector, button.clip
+button.selector
   display: block;
   height: clip_size
   width: clip_size
@@ -170,28 +233,25 @@ button.selector, button.clip
     box-shadow: 3px 3px 3px #B00
 
 button.selector
-  button-background #BBEEBB
+  button-background #FFFF77
 
-button.clip
+button.selector.clip
   button-background #FEFEFE
 
-button.selector.add
-  button-background #EEEE66
-
-button.selector.cancel
+button.selector[command=cancel]
   button-background #FFCC99
 
-.selectorBigText
-  font-size:100px
-  margin: 50px 0 0 300px
-
-button.selector img, button.clip img
+button.selector img
   height: 75%
   width: 75%
   margin:10px auto
 
-button.selector p, button.clip p
+button.selector p
   margin-top: -5px
+
+.selectorBigText
+  font-size:100px
+  margin: 50px 0 0 300px
 
 .tab
   z-index: -1

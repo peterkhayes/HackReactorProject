@@ -5,14 +5,58 @@ class Tunesmith.Views.ClipsView extends Backbone.View
   className: 'clips clearfix'
 
   initialize: ->
-    console.log "initialized clip view"
     @collection.on('finishedRecording', @render, @)
     @collection.on('showOptions', @renderOptions, @)
 
     @currentTab = new Tunesmith.Views.CurrentTabView()
 
   events: ->
-    'click': 'processClick'
+    'mouseup .selector': 'processClick'
+
+
+  processClick: (e) ->
+    command = $(e.target).attr('command') or $(e.target).parent().attr('command')
+    type = $(e.target).attr('type') or $(e.target).parent().attr('type')
+
+    switch command
+      when 'cancel'
+        @render()
+      when 'chooseCat'
+        @renderSelector([
+          {command: 'chooseType', type: 'instrument', name: 'Instrument', image: 'instrument'},
+          {command: 'chooseType', type: 'drum', name: 'Drums', image: 'drum'},
+          {command: 'chooseType', type: 'live', name: 'Live', image: 'live'},
+          {command: 'cancel', name: 'Cancel', image: 'cancel'}
+        ], "What kind of clip?")
+      when 'chooseType'
+        if type == 'instrument'
+          @renderSelector([
+            {command: 'record', type: 'e_guitar', name: 'E. Guitar', image: 'e_guitar'},
+            {command: 'record', type: 'a_guitar', name: 'A. Guitar', image: 'a_guitar'},
+            {command: 'record', type: 'bass', name: 'Bass', image: 'bass'},
+            {command: 'record', type: 'synth', name: 'Synth', image: 'synth'},
+            {command: 'record', type: 'piano', name: 'Piano', image: 'piano'},
+            {command: 'record', type: 'sax', name: 'Sax', image: 'sax'},
+            {command: 'record', type: 'strings', name: 'Strings', image: 'strings'},
+            {command: 'cancel', name: 'Cancel', image: 'cancel'}
+          ], "Which instrument?")
+        else if type == 'drum'
+          @renderSelector([
+            {command: 'record', type: 'live_kit', name: 'Live', image: 'live_kit'},
+            {command: 'record', type: 'hiphop_kit', name: 'Hip Hop', image: 'hiphop_kit'},
+            {command: 'record', type: 'electronic_kit', name: 'Electronic', image: 'electronic_kit'},
+            {command: 'cancel', name: 'Cancel', image: 'cancel'}
+          ], "Which drum kit?")
+      when 'record'
+        @renderSelector([
+          {command: 'stopRecording', name: "Done", image: "stop"}
+        ], "Recording...", true)
+        clip = new Tunesmith.Models.ClipModel({type: type, notes: []})
+        @collection.add(clip)
+        @collection.record(clip)
+      when 'stopRecording'
+        @collection.stopRecordingAndAddClip()
+        @renderSelector([], "Processing...", true) # No buttons here.
 
   render: ->
     @$el.html ''
@@ -20,7 +64,7 @@ class Tunesmith.Views.ClipsView extends Backbone.View
     @$el.append(@currentTab.render())
 
     # Put the add new button first.
-    @$el.append(Templates['selector']({name: "Add Track", type: "add", image: "record"}));
+    @$el.append(Templates['selector']({name: "Add Track", command: "chooseCat", image: "record"}));
 
     # Then append any clips we've created.
     @collection.each( (clip) =>
@@ -29,52 +73,16 @@ class Tunesmith.Views.ClipsView extends Backbone.View
 
     @$el
 
-  processClick: (e) ->
-    clicked = $(e.target)
 
-    if clicked.hasClass "cancel"
-      @render()
-    else if clicked.hasClass "add"
-      @renderSelector('type', "Choose which type of clip.")
-
-
-    else if clicked.hasClass "instruments"
-      @renderRecorder('piano')
-    else if clicked.hasClass "drums"
-      @renderRecorder('hiphop_kit')
-    # else if clicked.hasClass "instruments"
-    #   @renderSelector('instruments')
-    # else if clicked.hasClass "drums"
-    #   @renderSelector('drums')
-    # else if clicked.hasClass 'instrument'
-    #   @renderRecorder(clicked.attr('instrument'))
-    else if clicked.hasClass "live"
-      console.log "not yet you quicky!"
-    else if clicked.hasClass "stop"
-      @stopRecordingAndAddClip()
-    else if clicked.hasClass "rerecord"
-      @renderRerecorder()
-    else if clicked.hasClass "edit"
-      @renderEditor()
-
-  renderSelector: (template, message) ->
-    @$el.html Templates['selector']()
-    @$el.append(@currentTab.render(message))
+  renderSelector: (buttons, message, bigText) ->
+    @$el.html ''
+    for button in buttons
+      @$el.append(Templates['selector'](button))
+    if bigText # If optional 'bigText' is passed in, render inside the list with huge letters.
+      @$el.append(Templates['bigText']({text: message}))
+    else # Otherwise put it in a pop-up above the cliplist.
+      @$el.append(@currentTab.render(message))
     @$el
-
-  renderRecorder: (type) ->
-    console.log 'rendering recorder'
-    clip = new Tunesmith.Models.ClipModel({type: type, notes: []})
-    @$el.html Templates['selector_record']()
-    @$el.append(@currentTab.render('Recording...'))
-    @collection.add(clip)
-    @collection.record(clip)
-
-  stopRecordingAndAddClip: ->
-    @$el.html Templates['selector_processing']()
-    @$el.append(@currentTab.render('Working...'))
-    @collection.stopRecordingAndAddClip()
-
 
   renderOptions: (clip) ->
     @editTarget = clip
@@ -82,7 +90,6 @@ class Tunesmith.Views.ClipsView extends Backbone.View
     @$el.append(@currentTab.render("Options for #{clip.get('type')}"))
 
   renderRerecorder: ->
-    console.log 'rerecording'
     @$el.html Templates['selector_record']()
     @$el.append(@currentTab.render("Rerecording #{@editTarget.get('type')}"))
     @editTarget.clear()
@@ -93,6 +100,3 @@ class Tunesmith.Views.ClipsView extends Backbone.View
     console.log(@editTarget.get('notes'))
     @editTarget = undefined
     @render()
-
-
-
