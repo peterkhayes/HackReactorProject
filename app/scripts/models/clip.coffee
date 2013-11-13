@@ -3,9 +3,13 @@
 class Tunesmith.Models.ClipModel extends Backbone.Model
 
   initialize: =>
+    @set('name', @formatName(@get('type')))
 
-  clear: ->
-    @set 'notes', []
+  formatName: (str) ->
+    str = (@capitalize(word) for word in str.split('_')).join(" ")
+
+  capitalize: (str) ->
+    str = (str.charAt(0).toUpperCase() + str.slice(1))
 
   play: (time) =>
     notes = @get('notes')

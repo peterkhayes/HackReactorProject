@@ -5,9 +5,9 @@ class Tunesmith.Views.PlayerView extends Backbone.View
   className: "tab playback"
 
   initialize: (params) ->
-    @collection.on('note', (e) =>
+    @listenTo(@collection, 'note', (e) =>
       @collection.tools('midi').play(e.type, e.note)
-    , @)
+    )
     @advance()
 
   events: ->

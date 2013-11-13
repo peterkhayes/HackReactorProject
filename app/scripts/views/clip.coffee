@@ -2,18 +2,19 @@
 
 class Tunesmith.Views.ClipView extends Backbone.View
 
-  initialize: ->
-    @model.on('note', @flash, @)
+  events: {
+    'mouseup': 'edit'
+  }
 
-  events: ->
-    'click': -> @model.trigger('showOptions', @model)
+  initialize: ->
+    @listenTo(@model, 'note', @flash)
 
   render: ->
     @$el = $(Templates['selector']({
-      name: @capitalizeFirst(@model.get('type')),
-      command: 'editClip',
+      name: @model.get('name'),
       image: @model.get('type')
     }))
+    @delegateEvents()
     @$el.addClass('clip')
     @$el
 
@@ -24,5 +25,5 @@ class Tunesmith.Views.ClipView extends Backbone.View
   unflash: =>
     @$el.removeClass('flash');
 
-  capitalizeFirst: (str) ->
-    return str.charAt(0).toUpperCase() + str.slice(1)
+  edit: =>
+    @model.trigger('edit', @model)

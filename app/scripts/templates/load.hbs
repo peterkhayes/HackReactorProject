@@ -1,6 +1,17 @@
-<h2>{{header}}</h2>
 <button class='close'>X</button>
-<input class='name' type='text' placeholder="Your Song's Name">
-<br><button class='submit'>{{button}}</button>
-<span class='swap'>{{swap}}</span>
-<p class='error'> </p>
+{{#if user}}
+  {{#if loading}}
+    <h2>Loading your songs...
+  {{else}}
+    <h2>Load a song:</h2>
+    <ul>
+    {{#each songs}}
+      <li class='song'>{{this}}</li>
+    {{else}}
+      <li>No songs to display</li>
+    {{/each}}
+    </ul>
+  {{/if}}
+{{else}}
+  <h2>You need to log in before you can load your songs!</h2>
+{{/if}}

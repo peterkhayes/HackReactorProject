@@ -8,30 +8,32 @@ class Tunesmith.Views.SaveView extends Backbone.View
     'click button.close': 'close'
     'click button.submit': 'submit'
     'click button.overwrite': 'save'
-    'click button.noOverwrite': 'render'
+    'click button.noOverwrite': -> @render()
   }
 
   render: (existingTitle) ->
     $('#greyout').show()
-    @$el.html(Templates['save']({existingTitle: existingTitle}))
+    @$el.html(Templates['save']({user: @model.get('user'), existingTitle: existingTitle}))
     @$el.appendTo('body')
 
   close: ->
-    @$el.remove()
+    @$el.detach()
     $('#greyout').hide()
 
   submit: ->
     title = @$el.find('.title').val()
-    console.log('looking up #{title}')
-    @model.checkIfAlreadySaved(title, (exists) =>
-      if exists
+    console.log "title is #{title}"
+    @model.load(
+      title,
+      (song, title) =>
         @render(title)
-      else
-        @save()
+      (song, title) =>
+        @save(title)
     )
 
-  save: ->
-    title = @$el.find('.title').val()
+  save: (title) ->
+    title ?= @$el.find('.title').text()
+    console.log "title is #{title}"
     @model.save(title)
     @close()
 

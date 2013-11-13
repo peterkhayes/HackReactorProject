@@ -1,11 +1,14 @@
-<h2>Save your song:</h2>
 <button class='close'>X</button>
-{{#unless existingTitle}}
-  <input class='name' type='text' placeholder="Your Song's Title">
-  <br><button class='submit'>Save</button>
+{{#if user}}
+  <h2>Save your song:</h2>
+  {{#unless existingTitle}}
+    <input class='title' type='text' placeholder="Your Song's Title">
+    <br><button class='submit'>Save</button>
+  {{else}}
+    <p class='overwrite'>Would you like to overwrite the song '<span class='title'>{{existingTitle}}</span>'?</p><br>
+    <button class='overwrite'>Yes</button>
+    <button class='noOverwrite'>No</button>
+  {{/unless}}
 {{else}}
-  <p class='overwrite'>Would you like to overwrite {{existingTitle}}?</p><br>
-  <button class='overwrite'>Yes</button>
-  <button class='noOverwrite'>No</button>
-{{/unless}}
-<p class='error'> </p>
+  <h2>You need to log in before you can save your songs!</h2>
+{{/if}}

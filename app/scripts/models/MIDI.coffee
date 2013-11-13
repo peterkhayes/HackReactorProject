@@ -19,7 +19,7 @@ class Tunesmith.Models.MidiModel extends Backbone.Model
         notes: [39, 44, 49, 54, 59, 64, 69, 74]
       }
       e_guitar: {
-        notes: []
+        notes: [40, 45, 50, 57, 62]
       }
       a_guitar: {
         notes: []

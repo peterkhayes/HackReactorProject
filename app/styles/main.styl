@@ -63,11 +63,14 @@ text_sizes = 10px 16px 22px 30px 50px
   padding 0
   font-family: helvetica
 
-// Kill default buttonsL
+// Kill default buttons and lists.
 button
   border: 0
   outline: 0
   background: none
+
+li
+  list-style-type: none
 
 .left
   float left
@@ -124,7 +127,7 @@ button
   display: none
   background-color: #242264
 
-.authPopup
+.popup
   position: fixed
   top: 50%
   left: 50%
@@ -140,20 +143,11 @@ button
   box-shadow: 5px 5px 5px #666
   h2
     margin: 15px 10px
-  .close
-    position: absolute
-    right: 10px
-    top: 10px
-    color: #B11
-    font-size: 36px
-    cursor: pointer
-    &:hover
-      color: lighten(@color, 20%)
   input
     padding: 10px
     font-size: 20px
     margin: 15px
-  .submit
+  button
     font-size: 18px
     border: std_border
     border-radius: 5px
@@ -164,9 +158,29 @@ button
     cursor: pointer
     &:hover
       background-color lighten(@background-color, 20%)
+    &.close
+      position: absolute
+      right: 10px
+      top: 10px
+      color: #B11
+      font-size: 36px
+      cursor: pointer
+      border: none
+      background-color: transparent
+      margin: 0
+      padding: 0
+      &:hover
+        color: lighten(@color, 20%)
   .swap
     cursor: pointer
     text-decoration: underline
+    color: green
+    &:hover
+      color lighten(@color, 20%)
+  .song
+    margin-left: 50px
+    margin-bottom: 5px
+    cursor: pointer
     color: green
     &:hover
       color lighten(@color, 20%)
@@ -213,7 +227,6 @@ header button
   border std_border
   border-radius 10px
   box-shadow: 5px 5px 5px #666
-  color: #111
 
 button.selector
   display: block;

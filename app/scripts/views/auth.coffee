@@ -5,8 +5,8 @@ class Tunesmith.Views.LoginView extends Backbone.View
   className: 'popup'
 
   initialize: ->
-    @model.on('authError', @error, @)
-    @model.on('authSuccess', @close, @)
+    @listenTo(@model, 'authError', @error)
+    @listenTo(@model, 'authSuccess', @close)
 
   events: {
     'click button.close': 'close'
