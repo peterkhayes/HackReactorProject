@@ -9,6 +9,8 @@ class Tunesmith.Views.SaveView extends Backbone.View
     'click button.submit': 'submit'
     'click button.overwrite': 'save'
     'click button.noOverwrite': -> @render()
+    'keyup input': (e) -> if e.keyCode == 13 then @submit()
+    'keyup': (e) -> if e.keyCode == 27 then @close()
   }
 
   render: (existingTitle) ->
@@ -32,7 +34,7 @@ class Tunesmith.Views.SaveView extends Backbone.View
     )
 
   save: (title) ->
-    title ?= @$el.find('.title').text()
+    if typeof title == "object" then title = @$el.find('.title').text()
     console.log "title is #{title}"
     @model.save(title)
     @close()

@@ -26,16 +26,37 @@ class Tunesmith.Models.AppModel extends Backbone.Model
       )
     )
 
-  newSong: ->
+  newSong: (newSong, title) =>
+    console.log "making a new song with data: ", newSong
     @get('cliplist').reset()
     @get('cliplist').off()
 
-    newCL = new Tunesmith.Collections.ClipCollection()
-    newCL.tools('midi', @get('midi'))
-    newCL.tools('recorder', @get('recorder'))
+    newSong = newSong or {}
+    newSong.tempo = newSong.tempo or 120
+
+    recorder = @get('recorder')
+    midi = @get('midi')
+
+    recorder.stop()
+    recorder.clear()
+    midi.clear()
+
+    newCL = new Tunesmith.Collections.ClipCollection(newSong.clips)
+
+    newCL.params('tempo', newSong.tempo)
+    newCL.tools('midi', midi)
+    newCL.tools('recorder', recorder)
     newCL.tools('pitchDetector', @get('pitchDetector'))
     newCL.tools('metronome', @get('metronome'))
+
+    newCL.each( (clip) ->
+      midi.loadInstrument(clip.get('type'))
+    )
+
     @set('cliplist', newCL)
+    @set('title', title)
+    @trigger('clearSong')
+
 
   login: (email, pass) =>
     console.log("attempting to log in...")
@@ -44,16 +65,17 @@ class Tunesmith.Models.AppModel extends Backbone.Model
         password: pass
       })
 
-  signup: (email, pass) ->
+  signup: (email, pass) =>
     console.log("attempting to sign up...")
-    @get('auth').createUser(email, pass, (error, user) ->
+    @get('auth').createUser(email, pass, (error, user) =>
+      console.log @
       if error
         console.log(error)
         @trigger('authError', error)
       else
         console.log(user)
-        @trigger('authSuccess')
         @set 'user', user
+        @trigger('authSuccess')
     )
 
   logout: ->
@@ -79,6 +101,7 @@ class Tunesmith.Models.AppModel extends Backbone.Model
     fbSong.set(data, (error) ->
       console.log(if error then error else "Song #{title} saved!")
     )
+    @set('title', title)
 
   load: (title, success_cb, fail_cb) =>
     console.log("loading #{title} from server")
@@ -91,21 +114,10 @@ class Tunesmith.Models.AppModel extends Backbone.Model
     )
 
   getSongList: (cb) =>
-    console.log("getting all of #{@get('user')}'s songs")
+    console.log("getting all of #{@get('user').uid}'s songs")
     fbSongs = new Firebase("https://tunesmith.firebaseio.com/songs/#{@get('user').uid}")
     fbSongs.once('value', (songs) =>
       console.log(songs.val())
       console.log((song for song of songs.val()))
       cb((song for song of songs.val()))
     )
-
-  generate: (song, title) =>
-    console.log("Generating #{title}!")
-    cliplist = new Tunesmith.Collections.ClipCollection()
-    song.clips ?= []
-    for clip in song.clips
-      cliplist.add(new Tunesmith.Models.ClipModel({type: clip.type, notes: clip.notes}))
-    @newSong()
-    @set('cliplist', cliplist)
-    cliplist.params('tempo', song.tempo)
-    @set('title', title)

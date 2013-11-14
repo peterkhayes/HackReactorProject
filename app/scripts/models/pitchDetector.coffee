@@ -22,12 +22,14 @@ class Tunesmith.Models.PitchDetectorModel extends Backbone.Model
   convertToPitches: (chunks) ->
     pitches = []
     pitch = @get 'pitch'
+    YIN = makeYIN({bufferLength: chunks[0].length})
     for chunk in chunks
+      YINTone = YIN.getPitch(chunk)
       ac_tone = detectPitch(chunk)
       pitch.input(chunk)
       pitch.process()
       tone = pitch.findTone() or {freq: 0, db: -90}
-      pitches.push {pitch: @getNote(tone.freq), vel: 2*(tone.db + 90), len: 1, ac: @getNote(ac_tone)}
+      pitches.push {pitch: @getNote((tone.freq)), vel: 2*(tone.db + 90), len: 1, ac: @getNote(ac_tone)}
     pitches
 
   convertToDrumPitches: (chunks) ->

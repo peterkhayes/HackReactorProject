@@ -12,18 +12,17 @@ class Tunesmith.Views.AppView extends Backbone.View
     @loadView = new Tunesmith.Views.LoadView({model: @model})
 
     @listenTo(@model, 'authSuccess', ->
+      console.log @model.get('user')
       @menuBarView.render()
     )
+    @listenTo(@model, 'clearSong', @resetClipViews)
     @render()
 
   events: ->
     'click header .newSong': ->
       @model.newSong()
-      @resetClipViews()
-      @render()
     'click header .newSection': ->
       @model.newSection()
-      @render()
     'click header .save': ->
       @saveView.render()
     'click header .load': ->
@@ -54,3 +53,5 @@ class Tunesmith.Views.AppView extends Backbone.View
     @clipsView.unbind()
     @playerView = new Tunesmith.Views.PlayerView({collection: @model.get('cliplist')})
     @clipsView = new Tunesmith.Views.ClipsView({collection: @model.get('cliplist')})
+
+    @render()

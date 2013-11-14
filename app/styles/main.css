@@ -50,7 +50,7 @@ button.selector[command=cancel]:active{background:#ffad5c;background:-moz-linear
 button.selector[command=cancel].greyout{background:#7a3d00;background:-moz-linear-gradient(-45deg,#7a3d00 0%,#a35200 100%);background:-webkit-gradient(linear,left top,right bottom,color-stop(0%,#7a3d00),color-stop(100%,#a35200));background:-webkit-linear-gradient(-45deg,#7a3d00 0%,#a35200 100%);background:-o-linear-gradient(-45deg,#7a3d00 0%,#a35200 100%);background:-ms-linear-gradient(-45deg,#7a3d00 0%,#a35200 100%);background:linear-gradient(135deg,#7a3d00 0%,#a35200 100%);}
 button.selector img{height:75%;width:75%;margin:10px auto}
 button.selector p{margin-top:-5px}
-.selectorBigText{font-size:100px;margin:50px 0 0 300px}
+.selectorBigText{font-size:100px;margin:50px 80px 0 0;float:right}
 .tab{z-index:-1;position:absolute;background-color:#e4e4e4;top:80px;border-radius:10px;-moz-border-radius:10px;-webkit-border-radius:10px;height:40px;padding:10px;border:1px solid #000;left:50%;}
 .tab.current{margin-left:-400px}
 .tab.playback{margin-left:250px}

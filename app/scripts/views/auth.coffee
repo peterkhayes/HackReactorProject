@@ -12,6 +12,8 @@ class Tunesmith.Views.LoginView extends Backbone.View
     'click button.close': 'close'
     'click button.submit': 'submit'
     'click .swap': 'swap'
+    'keyup input': (e) -> if e.keyCode == 13 then @submit()
+    'keyup': (e) -> if e.keyCode == 27 then @close()
   }
 
   render: (type) ->

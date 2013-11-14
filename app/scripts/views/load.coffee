@@ -25,7 +25,7 @@ class Tunesmith.Views.LoadView extends Backbone.View
 
   load: (e) ->
     console.log "Loading {$(e.target).text()}"
-    @model.load($(e.target).text(), @model.generate)
+    @model.load($(e.target).text(), @model.newSong)
     @close()
 
   error: (err) ->

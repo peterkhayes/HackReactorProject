@@ -123,3 +123,6 @@ class Tunesmith.Models.MidiModel extends Backbone.Model
         @stopNote(source)
       ,1)
 
+  clear: ->
+    @set 'noteEvents', []
+
