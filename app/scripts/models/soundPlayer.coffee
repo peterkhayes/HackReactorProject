@@ -50,7 +50,8 @@ class Tunesmith.Models.SoundPlayerModel extends Backbone.Model
     unless instrument.buffers
       instrument.buffers = []
       for note, i in instrument.notes
-          @loadBuffer("audio/#{name}/#{note}.mp3", instrument.buffers, i)
+          @loadBuffer("/audio/#{name}/#{note}.mp3", instrument.buffers, i)
+          # @loadBuffer("https://s3-us-west-1.amazonaws.com/tunesmith/audio/#{name}/#{note}.mp3", instrument.buffers, i)
 
   loadBuffer: (url, destination, i) ->
     request = new XMLHttpRequest()
@@ -98,7 +99,6 @@ class Tunesmith.Models.SoundPlayerModel extends Backbone.Model
     source.gain.value = (note.vel / 127)
     source.connect(context.destination);
     source.noteOn(0)
-
 
     # Push the node into our events loop so we can end it later.
     @get('noteEvents').push({source: source, len: note.len})

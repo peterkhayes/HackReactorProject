@@ -55,5 +55,6 @@ button.selector p{margin-top:-5px}
 .tab{z-index:-1;position:absolute;background-color:#e4e4e4;top:80px;border-radius:10px;-moz-border-radius:10px;-webkit-border-radius:10px;height:40px;padding:10px;border:1px solid #000;left:50%;}
 .tab.current{margin-left:-400px}
 .tab.playback{margin-left:250px}
+.tab.flash{background-color:#f2f2f2}
 .tempo{margin:0 10px;}
 .tempo.up,.tempo.down{cursor:pointer}

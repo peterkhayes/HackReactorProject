@@ -80,6 +80,7 @@ class Tunesmith.Views.ClipsView extends Backbone.View
         ], "Recording...", true)
         if @editTarget
           clip = @editTarget
+          clip.clear()
         else
           clip = new Tunesmith.Models.ClipModel({type: type, notes: []})
           @collection.add(clip)

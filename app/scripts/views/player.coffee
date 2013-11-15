@@ -23,7 +23,9 @@ class Tunesmith.Views.PlayerView extends Backbone.View
 
     if (@collection.params('currentTime') % @collection.params('minInterval')) == 0
       step = (@collection.params('currentTime') % (4*@collection.params('minInterval')))/4
+      @tick()
 
+    @collection.tools('midi').advance()
     setTimeout(@advance, 60000 / @collection.params('tempo') / @collection.params('minInterval'))
 
   playSound: (type) =>
@@ -43,5 +45,16 @@ class Tunesmith.Views.PlayerView extends Backbone.View
   render: ->
     @$el.html(Templates['playback_tab']({tempo: @collection.params('tempo')}))
     @$el
+
+  tick: ->
+    console.log('tick')
+    @flash()
+
+  flash: ->
+    @$el.addClass('flash')
+    setTimeout(@unflash.bind(@), 50)
+
+  unflash: =>
+    @$el.removeClass('flash');
 
 

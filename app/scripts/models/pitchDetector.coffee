@@ -18,24 +18,6 @@ class Tunesmith.Models.PitchDetectorModel extends Backbone.Model
     end = buffer.length - chunkLength;
     (buffer.subarray(x, x + chunkLength) for x in [0..end] by chunkLength)
 
-  # convertToPitches: (chunks) ->
-  #   pitches = []
-  #   pitch = @get 'pitch'
-  #   YIN = makeYIN({bufferLength: chunks[0].length})
-  #   #DW = makeDW({bufferLength: chunks[0].length})
-  #   # MPM = makeMPM({bufferLength: chunks[0].length})
-  #   console.log(chunks[0].length)
-  #   for chunk in chunks
-  #     YINTone = YIN.getPitch(chunk)
-  #     if YINTone.freq > 5000 then YINTone.freq = 0
-  #     ac_tone = detectPitch(chunk)
-  #     pitch.input(chunk)
-  #     pitch.process()
-  #     tone = pitch.findTone() or {freq: 0, db: -90}
-  #     console.log("YIN: #{YINTone.freq}, AC: #{ac_tone}, Orig: #{tone.freq}");
-  #     pitches.push {pitch: @getNote(YINTone.freq), vel: 128, len: 1, ac: @getNote(ac_tone)}
-  #   pitches
-
   convertToPitches: (chunks) ->
     pitches = []
     chunkingFactor = @get 'chunkingFactor'
@@ -55,11 +37,11 @@ class Tunesmith.Models.PitchDetectorModel extends Backbone.Model
       if chunkCount == chunkingFactor
         if toneAVGcount >= (chunkingFactor - 1)
           toneAVG /= toneAVGcount
-          pitches.push({pitch: @getNote(toneAVG), vel: 128, len: 1, ac: @getNote(toneAVG)})
-          console.log("Calculated Tone: #{toneAVG}")
+          pitches.push({pitch: @getNote(toneAVG), vel: 128, len: 1})
+          # console.log("Calculated Tone: #{toneAVG}")
         else
           pitches.push({pitch: 0, vel: 0, len: 1, ac: 0})
-          console.log("No calculated tone.")
+          # console.log("No calculated tone.")
         toneAVG = 0
         toneAVGcount = 0
         chunkCount = 0
@@ -102,25 +84,23 @@ class Tunesmith.Models.PitchDetectorModel extends Backbone.Model
       if sum > 1
         if max_idx == 0
           console.log "kick"
-          note = {pitch: 1, vel: Math.min(127, 4*sum), len: 4}
+          note = {pitch: 1, vel: Math.min(110, 4*sum), len: 4}
         if (max_idx == 1 or max_idx == 2 or max_idx == 3 or max_idx == 4)
           console.log "snare"
-          note = {pitch: 2, vel: Math.min(sum, 127), len: 4}
-        if results[0] < 5 and max_idx > 3
+          note = {pitch: 2, vel: Math.min(sum, 110), len: 4}
+        if (results[0] < 2) and (max_idx > 3)
           console.log "hat"
-          note = {pitch: 3, vel: Math.min(sum, 127), len: 4}
+          note = {pitch: 3, vel: Math.min(sum, 110), len: 4}
       pitches.push(note)
     pitches
 
   merge: (notes) ->
-    sus = null;
+    sus = {pitch: 0};
     for note, i in notes
-      dprev = notes[i-2] || {pitch: 0}
-      prev = notes[i-1] || {pitch: 0}
       next = notes[i+1] || {pitch: 0}
       dnext = notes[i+2] || {pitch: 0}
 
-      console.log(dprev.pitch, prev.pitch, note.pitch, next.pitch, dnext.pitch)
+      # console.log(sus.pitch, "---", note.pitch, "---", next.pitch, dnext.pitch)
 
       # Fix onset and ending errors.
       if note.pitch != sus.pitch and next.pitch == dnext.pitch
@@ -133,11 +113,12 @@ class Tunesmith.Models.PitchDetectorModel extends Backbone.Model
           note.pitch = 0
           sus.len++
 
-      # Fix "runner errors"
+      # Fix runner errors, like A-Bb-B all in a row quickly.
       if (note.pitch == next.pitch + 1 == dnext.pitch + 2) or (note.pitch == next.pitch - 1 == dnext.pitch - 2)
-        console.log("runner error")
-        note.pitch = next.pitch
-        dnext.pitch = next.pitch
+        if (sus.pitch != note.pitch) && (!notes[i+3] or notes[i+3].pitch == 0) #Escape for chromatic scale.
+          console.log("runner error")
+          note.pitch = next.pitch
+          dnext.pitch = next.pitch
 
       # Fix octave errors.
       while sus.pitch != 0 and next.pitch != 0 and note.pitch > sus.pitch + 7 and note.pitch > next.pitch + 7
