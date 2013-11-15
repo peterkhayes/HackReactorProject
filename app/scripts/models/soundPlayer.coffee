@@ -1,7 +1,7 @@
 'use strict';
 
 # Controls the midi-js library.
-class Tunesmith.Models.MidiModel extends Backbone.Model
+class Tunesmith.Models.SoundPlayerModel extends Backbone.Model
 
   initialize: (cb, context) =>
 
@@ -12,7 +12,7 @@ class Tunesmith.Models.MidiModel extends Backbone.Model
       live_kit: {
         notes:[1, 2, 3]
       }
-      electronic_kit: {
+      dance_kit: {
         notes: [1, 2, 3]
       }
       piano: {

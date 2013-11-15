@@ -3,9 +3,8 @@
 class Tunesmith.Models.PitchDetectorModel extends Backbone.Model
 
   initialize: (cb, context) ->
-    @set "pitch", new PitchAnalyzer(44100);
     @set "context", context
-
+    @set "chunkingFactor", 2
     cb()
 
   getNote: (frequency) ->
@@ -14,22 +13,56 @@ class Tunesmith.Models.PitchDetectorModel extends Backbone.Model
     else
       0
 
-  chunk: (buffer, tempo, minInterval) ->
-    chunkLength = Math.round(2646000 / minInterval / tempo)
+  chunk: (buffer, tempo, minInterval, chunkingFactor) ->
+    chunkLength = Math.round(2646000 / (minInterval * tempo * chunkingFactor))
     end = buffer.length - chunkLength;
     (buffer.subarray(x, x + chunkLength) for x in [0..end] by chunkLength)
 
+  # convertToPitches: (chunks) ->
+  #   pitches = []
+  #   pitch = @get 'pitch'
+  #   YIN = makeYIN({bufferLength: chunks[0].length})
+  #   #DW = makeDW({bufferLength: chunks[0].length})
+  #   # MPM = makeMPM({bufferLength: chunks[0].length})
+  #   console.log(chunks[0].length)
+  #   for chunk in chunks
+  #     YINTone = YIN.getPitch(chunk)
+  #     if YINTone.freq > 5000 then YINTone.freq = 0
+  #     ac_tone = detectPitch(chunk)
+  #     pitch.input(chunk)
+  #     pitch.process()
+  #     tone = pitch.findTone() or {freq: 0, db: -90}
+  #     console.log("YIN: #{YINTone.freq}, AC: #{ac_tone}, Orig: #{tone.freq}");
+  #     pitches.push {pitch: @getNote(YINTone.freq), vel: 128, len: 1, ac: @getNote(ac_tone)}
+  #   pitches
+
   convertToPitches: (chunks) ->
     pitches = []
-    pitch = @get 'pitch'
-    YIN = makeYIN({bufferLength: chunks[0].length})
+    chunkingFactor = @get 'chunkingFactor'
+    chunkLength = chunks[0].length
+    YIN = makeYIN({butterLength: chunkLength})
+
+    toneAVG = 0
+    toneAVGcount = 0
+    chunkCount = 0
     for chunk in chunks
-      YINTone = YIN.getPitch(chunk)
-      ac_tone = detectPitch(chunk)
-      pitch.input(chunk)
-      pitch.process()
-      tone = pitch.findTone() or {freq: 0, db: -90}
-      pitches.push {pitch: @getNote((tone.freq)), vel: 2*(tone.db + 90), len: 1, ac: @getNote(ac_tone)}
+      chunkCount++
+      tone = YIN.getPitch(chunk).freq
+      console.log(tone)
+      if (0 < tone < 5000)
+        toneAVG += tone
+        toneAVGcount++
+      if chunkCount == chunkingFactor
+        if toneAVGcount >= (chunkingFactor - 1)
+          toneAVG /= toneAVGcount
+          pitches.push({pitch: @getNote(toneAVG), vel: 128, len: 1, ac: @getNote(toneAVG)})
+          console.log("Calculated Tone: #{toneAVG}")
+        else
+          pitches.push({pitch: 0, vel: 0, len: 1, ac: 0})
+          console.log("No calculated tone.")
+        toneAVG = 0
+        toneAVGcount = 0
+        chunkCount = 0
     pitches
 
   convertToDrumPitches: (chunks) ->
@@ -60,6 +93,8 @@ class Tunesmith.Models.PitchDetectorModel extends Backbone.Model
           max = results[i]
           max_idx = i
 
+      console.log results
+
       sum = 0;
       (sum += result for result in results)
 
@@ -68,7 +103,7 @@ class Tunesmith.Models.PitchDetectorModel extends Backbone.Model
         if max_idx == 0
           console.log "kick"
           note = {pitch: 1, vel: Math.min(127, 4*sum), len: 4}
-        if sum > 20 and (max_idx == 1 or max_idx == 2 or max_idx == 3 or max_idx == 4)
+        if (max_idx == 1 or max_idx == 2 or max_idx == 3 or max_idx == 4)
           console.log "snare"
           note = {pitch: 2, vel: Math.min(sum, 127), len: 4}
         if results[0] < 5 and max_idx > 3
@@ -78,29 +113,46 @@ class Tunesmith.Models.PitchDetectorModel extends Backbone.Model
     pitches
 
   merge: (notes) ->
-    sustained = notes[0]
+    sus = null;
     for note, i in notes
-      next = notes[i+1]
-      dnext = notes[i+2]
-      if sustained and (sustained.pitch > 0) and (note.ac > 20) and (note.pitch == 0)
-        note.pitch = sustained.pitch
+      dprev = notes[i-2] || {pitch: 0}
+      prev = notes[i-1] || {pitch: 0}
+      next = notes[i+1] || {pitch: 0}
+      dnext = notes[i+2] || {pitch: 0}
 
-      if next and (sustained.pitch > 0) and (sustained.pitch == next.pitch)
-        note.pitch = sustained.pitch
+      console.log(dprev.pitch, prev.pitch, note.pitch, next.pitch, dnext.pitch)
 
-      if next and (15 > note.pitch - sustained.pitch > 7) and (15 > note.pitch - next.pitch > 7) and (15 > note.pitch - dnext.pitch > 7)
-        note.pitch -= 12
+      # Fix onset and ending errors.
+      if note.pitch != sus.pitch and next.pitch == dnext.pitch
+        if Math.abs(note.pitch - next.pitch) == 1
+          console.log("onset error")
+          note.pitch = next.pitch
+      if note.pitch != next.pitch and sus.len > 1
+        if Math.abs(note.pitch - sus.pitch) == 1
+          console.log("ending error")
+          note.pitch = 0
+          sus.len++
 
-      if next and dnext and (Math.abs(note.pitch - next.pitch) == 1) and (Math.abs(note.pitch - dnext.pitch) == 1)
+      # Fix "runner errors"
+      if (note.pitch == next.pitch + 1 == dnext.pitch + 2) or (note.pitch == next.pitch - 1 == dnext.pitch - 2)
+        console.log("runner error")
         note.pitch = next.pitch
+        dnext.pitch = next.pitch
 
-      if note.pitch == sustained.pitch
+      # Fix octave errors.
+      while sus.pitch != 0 and next.pitch != 0 and note.pitch > sus.pitch + 7 and note.pitch > next.pitch + 7
+        console.log("octave error")
+        note.pitch /= 2
+
+      # Merge notes
+      if sus and sus.pitch == note.pitch
         note.pitch = 0
-        sustained.len++
+        sus.len++
+      else
+        sus = note
 
-      if note.pitch != sustained and note.pitch != 0
-        sustained = note
-    notes
+    return notes
+
 
   mergeDrums: (notes) ->
     for note, i in notes
@@ -118,8 +170,8 @@ class Tunesmith.Models.PitchDetectorModel extends Backbone.Model
 
   standardizeClipLength: (notes, minInterval) ->
     len = notes.length
-    prevPowerOf2 = @nextPowerOf2(len)/2
     nextPowerOf2 = @nextPowerOf2(len)
+    prevPowerOf2 = nextPowerOf2/2
 
     if (len - prevPowerOf2) < minInterval
       notes = notes.slice(0, prevPowerOf2)
@@ -130,15 +182,14 @@ class Tunesmith.Models.PitchDetectorModel extends Backbone.Model
     notes
 
   convertToDrums: (buffer, tempo, minInterval) ->
-    chunks = @chunk(buffer, tempo, minInterval)
+    chunks = @chunk(buffer, tempo, minInterval, 1)
     drumPitches = @convertToDrumPitches(chunks)
     merged = @mergeDrums(drumPitches)
     stdzd = @standardizeClipLength(merged, minInterval)
-    console.log stdzd
     return stdzd
 
   convertToNotes: (buffer, tempo, minInterval) ->
-    chunks = @chunk(buffer, tempo, minInterval)
+    chunks = @chunk(buffer, tempo, minInterval, 2)
     pitches = @convertToPitches(chunks)
     merged = @merge(pitches)
     stdzd = @standardizeClipLength(merged, minInterval)

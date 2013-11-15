@@ -26,6 +26,7 @@ li{list-style-type:none}
 .popup .song{margin-left:50px;margin-bottom:5px;cursor:pointer;color:#008000;}
 .popup .song:hover{color:#0c0}
 .popup .error{color:#f66}
+#twitter-widget-0{position:fixed;left:10px;bottom:10px}
 .loading{color:#f0f0f0;margin:100px auto;text-align:center}
 audio{display:none}
 header{background:#0036a3;background:-moz-linear-gradient(-45deg,#0036a3 0%,#0a5cff 100%);background:-webkit-gradient(linear,left top,right bottom,color-stop(0%,#0036a3),color-stop(100%,#0a5cff));background:-webkit-linear-gradient(-45deg,#0036a3 0%,#0a5cff 100%);background:-o-linear-gradient(-45deg,#0036a3 0%,#0a5cff 100%);background:-ms-linear-gradient(-45deg,#0036a3 0%,#0a5cff 100%);background:linear-gradient(135deg,#0036a3 0%,#0a5cff 100%);width:100%;position:fixed;left:0;top:0}

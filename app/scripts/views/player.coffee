@@ -20,11 +20,9 @@ class Tunesmith.Views.PlayerView extends Backbone.View
     currentTime = @collection.params('currentTime')
     @collection.params('currentTime', (currentTime + 1) % @collection.params('maxTime'))
     @collection.play(currentTime)
-    @collection.tools('midi').advance()
 
     if (@collection.params('currentTime') % @collection.params('minInterval')) == 0
       step = (@collection.params('currentTime') % (4*@collection.params('minInterval')))/4
-      @collection.tools('metronome').tick(step)
 
     setTimeout(@advance, 60000 / @collection.params('tempo') / @collection.params('minInterval'))
 

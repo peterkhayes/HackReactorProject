@@ -53,7 +53,7 @@ class Tunesmith.Collections.ClipCollection extends Backbone.Collection
       else # Non-drum instruments.
         notes = @_tools.pitchDetector.convertToNotes(buffer, @_params.tempo, @_params.minInterval)
       clip.set 'notes', notes # Give the notes to the clip.
-      if (notes.length / @_params.minInterval) > @_params.maxTime then @_params.maxTime = notes.length / minInterval
+      if (notes.length) > @_params.maxTime then @_params.maxTime = notes.length
       @_params.recordingDestination = null # We are no longer recording to a clip.
       @_tools.recorder.clear() # Empty the recorder to save memory.
       @trigger 'finishedRecording' # Trigger an event to update the view.

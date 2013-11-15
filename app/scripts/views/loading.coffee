@@ -2,7 +2,7 @@
 
 class Tunesmith.Views.LoadingView extends Backbone.View
 
-  render: (loaded) ->
+  render: (loaded, total) ->
     @$el.html ''
-    @$el.append(Templates["loading"]({loaded: loaded}))
+    @$el.append(Templates["loading"]({loaded: loaded, total: total}))
     @$el
