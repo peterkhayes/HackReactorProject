@@ -19,16 +19,14 @@ How to use
 
 Tech
 =======
-Language: Coffeescript
-MVC: Backbone.js
-Persistence: Firebase (an awesome solution for serverless databases: sync your data real time to the cloud)
-Authentication: Firebase
-CSS: Stylus
-Templating: Handlebars
-Pitch Detection: My own [pitchfinder.js](https://github.com/peterkhayes/pitchfinder.js "pitchfinder.js")
-
-Along with several homemade libraries for [pitch transcription] and polyphonic pitched sound playback!  Which you should totally check out.
-Also make sure to check out 
+<strong>Language</strong>: Coffeescript  
+<strong>MVC</strong>: Backbone.js  
+<strong>Persistence</strong>: Firebase (an awesome solution for serverless databases: sync your data real time to the cloud)  
+<strong>Authentication</strong>: Firebase Simple Login  
+<strong>CSS</strong>: Stylus  
+<strong>Templating</strong>: Handlebars  
+<strong>Pitch Detection</strong>: My own [pitchfinder.js](https://github.com/peterkhayes/pitchfinder.js "pitchfinder.js")  
+<strong>Playback</strong>: My other baby [instrumental](https://github.com/peterkhayes/instrumental.js "instrumental")
 
 Many thanks to
 ==============
