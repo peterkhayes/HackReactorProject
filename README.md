@@ -19,7 +19,7 @@ How to use
 
 Tech
 =======
-Written in Coffeescript, Backbone.js, and Firebase.
+Written in Coffeescript, Backbone.js, and Firebase (a wonderful cloud database and login system).  All client-side, baby.
 
 
 Many thanks to
@@ -27,5 +27,5 @@ Many thanks to
 * Matt Diamond (https://github.com/mattdiamond/), for Recorder.js
 * Jens Nockert (https://github.com/JensNockert/), for his FFT algorithm
 * Joren Six (https://github.com/JorenSix/), whose TarsosDSP package contained code for the YIN pitch detection algorithm that I ported to Javascript. 
-* The excellent team at Firebase, for their awesome tech support team.
+* The excellent team at Firebase, for their awesome tech support.
 * HACK REACTOR, the best place in the world to learn to program.
