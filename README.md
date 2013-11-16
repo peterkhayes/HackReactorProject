@@ -19,8 +19,16 @@ How to use
 
 Tech
 =======
-Written in Coffeescript, Backbone.js, and Firebase (a wonderful cloud database and login system).  All client-side, baby.
+Language: Coffeescript
+MVC: Backbone.js
+Persistence: Firebase (an awesome solution for serverless databases: sync your data real time to the cloud)
+Authentication: Firebase
+CSS: Stylus
+Templating: Handlebars
+Pitch Detection: My own [pitchfinder.js](https://github.com/peterkhayes/pitchfinder.js "pitchfinder.js")
 
+Along with several homemade libraries for [pitch transcription] and polyphonic pitched sound playback!  Which you should totally check out.
+Also make sure to check out 
 
 Many thanks to
 ==============
