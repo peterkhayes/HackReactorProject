@@ -26,7 +26,7 @@ Tech
 <strong>CSS</strong>: Stylus  
 <strong>Templating</strong>: Handlebars  
 <strong>Pitch Detection</strong>: My own [pitchfinder.js](https://github.com/peterkhayes/pitchfinder.js "pitchfinder.js")  
-<strong>Playback</strong>: My other baby [instrumental](https://github.com/peterkhayes/instrumental.js "instrumental")
+<strong>Playback</strong>: My other baby [instrumental.js](https://github.com/peterkhayes/instrumental.js "instrumental.js")
 
 Many thanks to
 ==============
