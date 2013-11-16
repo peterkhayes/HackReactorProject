@@ -31,6 +31,7 @@ class Tunesmith.Models.AppModel extends Backbone.Model
     @get('cliplist').reset()
     @get('cliplist').off()
 
+    maxTime = 0
     if newSong and newSong.clips
       for clip in newSong.clips
         console.log clip

@@ -14,8 +14,6 @@ class Tunesmith.Collections.ClipCollection extends Backbone.Collection
     }
     @_tools = {}
 
-    @on('record', @record)
-
   tools: (name, value) ->
     if value?
       @_tools[name] = value
@@ -42,6 +40,7 @@ class Tunesmith.Collections.ClipCollection extends Backbone.Collection
 
   record: ->
     console.log 'Recording'
+    @trigger('record')
     @_tools.recorder.record()
 
   stopRecordingAndAddClip: ->

@@ -7,7 +7,7 @@ class Tunesmith.Views.ClipsView extends Backbone.View
   initialize: ->
     @listenTo(@collection, 'finishedRecording', @render)
     @listenTo(@collection, 'edit', @renderEditor)
-
+    @listenTo(@collection, 'record', => @renderSpecial('record'))
     # @collection.on('finishedRecording', @render, @)
     # @collection.on('edit', @renderEditor, @)
 
@@ -27,11 +27,6 @@ class Tunesmith.Views.ClipsView extends Backbone.View
   render: (buttons, message, bigText) ->
     @$el.html ''
 
-    if bigText # If optional 'bigText' is passed in, render inside the list with huge letters.
-      @$el.append(Templates['bigText']({text: message}))
-    else # Otherwise put it the message in a pop-up above the cliplist.
-      @$el.append(@currentTab.render(message))
-
     if buttons
       for button in buttons
         @$el.append(Templates['selector'](button))
@@ -40,6 +35,11 @@ class Tunesmith.Views.ClipsView extends Backbone.View
       @collection.each( (clip) =>
         @$el.append(new Tunesmith.Views.ClipView({model: clip}).render())
       )
+
+    if bigText # If optional 'bigText' is passed in, render inside the list with huge letters.
+      @$el.append(Templates['bigText']({text: message}))
+    else # Otherwise put it the message in a pop-up above the cliplist.
+      @$el.append(@currentTab.render(message))
 
     @$el
 
@@ -58,26 +58,23 @@ class Tunesmith.Views.ClipsView extends Backbone.View
       when 'chooseType'
         if type == 'instrument'
           @render([
-            {command: 'record', type: 'e_guitar', name: 'E. Guitar', image: 'e_guitar'},
-            {command: 'record', type: 'a_guitar', name: 'A. Guitar', image: 'a_guitar'},
-            {command: 'record', type: 'bass', name: 'Bass', image: 'bass'},
-            {command: 'record', type: 'synth', name: 'Synth', image: 'synth'},
-            {command: 'record', type: 'piano', name: 'Piano', image: 'piano'},
-            {command: 'record', type: 'sax', name: 'Sax', image: 'sax'},
-            {command: 'record', type: 'strings', name: 'Strings', image: 'strings'},
+            {command: 'prerecord', type: 'e_guitar', name: 'E. Guitar', image: 'e_guitar'},
+            {command: 'prerecord', type: 'a_guitar', name: 'A. Guitar', image: 'a_guitar'},
+            {command: 'prerecord', type: 'bass', name: 'Bass', image: 'bass'},
+            {command: 'prerecord', type: 'synth', name: 'Synth', image: 'synth'},
+            {command: 'prerecord', type: 'piano', name: 'Piano', image: 'piano'},
+            {command: 'prerecord', type: 'sax', name: 'Sax', image: 'sax'},
+            {command: 'prerecord', type: 'strings', name: 'Strings', image: 'strings'},
             {command: 'cancel', name: 'Cancel', image: 'cancel'}
           ], "Which instrument?")
         else if type == 'drum'
           @render([
-            {command: 'record', type: 'live_kit', name: 'Live', image: 'live_kit'},
-            {command: 'record', type: 'hiphop_kit', name: 'Hip Hop', image: 'hiphop_kit'},
-            {command: 'record', type: 'dance_kit', name: 'Dance', image: 'dance_kit'},
+            {command: 'prerecord', type: 'live_kit', name: 'Live', image: 'live_kit'},
+            {command: 'prerecord', type: 'hiphop_kit', name: 'Hip Hop', image: 'hiphop_kit'},
+            {command: 'prerecord', type: 'dance_kit', name: 'Dance', image: 'dance_kit'},
             {command: 'cancel', name: 'Cancel', image: 'cancel'}
           ], "Which drum kit?")
-      when 'record'
-        @render([
-          {command: 'stopRecording', name: "Done", image: "stop"}
-        ], "Recording...", true)
+      when 'prerecord'
         if @editTarget
           clip = @editTarget
           clip.clear()
@@ -85,6 +82,11 @@ class Tunesmith.Views.ClipsView extends Backbone.View
           clip = new Tunesmith.Models.ClipModel({type: type, notes: []})
           @collection.add(clip)
         @collection.prerecord(clip)
+        @render([], "Get ready...", true)
+      when 'record'
+        @render([
+          {command: 'stopRecording', name: "Done", image: "stop"}
+        ], "Recording...", true)
       when 'stopRecording'
         @collection.stopRecordingAndAddClip()
         @render([], "Processing...", true) # No buttons here, so pass in []
@@ -94,7 +96,7 @@ class Tunesmith.Views.ClipsView extends Backbone.View
         @render()
       when 'edit'
         @render([
-          {command: 'record', name: 'Rerecord', image: 'record'},
+          {command: 'prerecord', name: 'Rerecord', image: 'record'},
           {command: 'delete', name: 'Delete', image: 'delete'},
           {command: 'cancel', name: 'Cancel', image: 'cancel'}
         ], "Editing #{@editTarget.get('type')}")

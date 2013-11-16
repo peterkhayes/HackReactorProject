@@ -59,9 +59,8 @@ class Tunesmith.Views.PlayerView extends Backbone.View
 
   # Metronome.
   tick: (loud) ->
-    # console.log(if loud then "TICK" else 'tick')
     @flash()
-    @collection.tools('midi').tick(loud)
+    if @collection.params('recordingDestination') then @collection.tools('midi').tick(loud)
 
   flash: ->
     @$el.addClass('flash')
