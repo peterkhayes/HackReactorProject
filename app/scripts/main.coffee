@@ -9,7 +9,7 @@ window.Tunesmith =
     loaded = 0
     total = 3
     loadingView = new Tunesmith.Views.LoadingView({el: '#container'})
-    loadingView.render(loaded, total)
+    loadingView.render()
 
     #webkit shim
     window.AudioContext = window.AudioContext or window.webkitAudioContext

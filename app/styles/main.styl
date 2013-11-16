@@ -40,7 +40,7 @@ background-size()
 
 
 // Variables
-bg_color = #44d9ff
+bg_color = #55C0FF
 
 header_color = #0044cc
 
@@ -113,8 +113,9 @@ li
   left: 0
   width: 100%
   height: 100%
-  gradient: darken(bg_color, 20%), lighten(bg_color, 20%)
+  background-color: bg_color
   z-index: -2
+  opacity: 0.6
 
 #greyout
   position:fixed
@@ -193,9 +194,21 @@ li
   bottom: 10px
 
 .loading
-  color: #F0F0F0
-  margin: 100px auto
+  color: #F09999
+
+.loading.compatibility
+  position: fixed
   text-align: center
+  width: 400px
+  bottom: 100px
+  left: 50%
+  margin-left: -200px
+
+.loading.permissionsArrow
+  position: fixed
+  right: -40px
+  top: 300px;
+
 
 audio
   display: none
@@ -206,6 +219,7 @@ header
   position: fixed
   left: 0px
   top: 0px
+  box-shadow: 0 2px 5px #006
 
 
 header button
@@ -227,10 +241,10 @@ header button
   margin clip_list_top_margin auto
   width 900px
   padding 20px
-  gradient(darken(clip_list_color, 10%), lighten(clip_list_color, 30%))
+  background-color: clip_list_color
   border std_border
   border-radius 10px
-  box-shadow: 5px 5px 5px #666
+  box-shadow: 3px 3px 3px #666
 
 button.selector
   display: block;

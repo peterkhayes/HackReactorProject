@@ -22,15 +22,13 @@ class Tunesmith.Models.PitchDetectorModel extends Backbone.Model
     pitches = []
     chunkingFactor = @get 'chunkingFactor'
     chunkLength = chunks[0].length
-    YIN = makeYIN({butterLength: chunkLength})
-
+    YINDetector = YIN({butterLength: chunkLength})
     toneAVG = 0
     toneAVGcount = 0
     chunkCount = 0
     for chunk in chunks
       chunkCount++
-      tone = YIN.getPitch(chunk).freq
-      console.log(tone)
+      tone = YINDetector(chunk).freq
       if (0 < tone < 5000)
         toneAVG += tone
         toneAVGcount++
@@ -75,7 +73,7 @@ class Tunesmith.Models.PitchDetectorModel extends Backbone.Model
           max = results[i]
           max_idx = i
 
-      console.log results
+      # console.log results
 
       sum = 0;
       (sum += result for result in results)
@@ -83,13 +81,13 @@ class Tunesmith.Models.PitchDetectorModel extends Backbone.Model
       note = {pitch: 0, vel: 0, len: 1}
       if sum > 1
         if max_idx == 0
-          console.log "kick"
+          # console.log "kick"
           note = {pitch: 1, vel: Math.min(110, 4*sum), len: 4}
         if (max_idx == 1 or max_idx == 2 or max_idx == 3 or max_idx == 4)
-          console.log "snare"
+          # console.log "snare"
           note = {pitch: 2, vel: Math.min(sum, 110), len: 4}
         if (results[0] < 2) and (max_idx > 3)
-          console.log "hat"
+          # console.log "hat"
           note = {pitch: 3, vel: Math.min(sum, 110), len: 4}
       pitches.push(note)
     pitches
@@ -139,17 +137,33 @@ class Tunesmith.Models.PitchDetectorModel extends Backbone.Model
     for note, i in notes
       prev = notes[i-1]
       if prev and prev.pitch == note.pitch
-        threshold = if note.pitch == 2 then 2 else 5/4
-        if prev.vel > threshold*note.vel
-          note.pitch = 0
-          note.vel = 0
-        else if prev.vel*threshold < note.vel
-          prev.pitch = 0
-          prev.vel = 0
+        note.pitch = 0
+        note.vel = 0
+        # threshold = if note.pitch == 2 then 2 else 5/4
+        # if prev.vel > threshold*note.vel
+        #   note.pitch = 0
+        #   note.vel = 0
+        # else if prev.vel*threshold < note.vel
+        #   prev.pitch = 0
+        #   prev.vel = 0
     notes
 
 
-  standardizeClipLength: (notes, minInterval) ->
+  standardize: (notes, minInterval) ->
+    # Deal with latency
+    notes = notes.slice(2)
+    # Lol guys check out this hack:
+    onBeatCount = 0
+    offBeatCount = 0
+    for note, i in notes
+      if note.pitch
+        if (i % 2) # offbeat notes
+          offBeatCount++
+        else
+          onBeatCount++
+
+    if offBeatCount > onBeatCount then notes = notes.slice(1)
+
     len = notes.length
     nextPowerOf2 = @nextPowerOf2(len)
     prevPowerOf2 = nextPowerOf2/2
@@ -160,20 +174,21 @@ class Tunesmith.Models.PitchDetectorModel extends Backbone.Model
       while (notes.length < nextPowerOf2)
         notes.push({pitch:0, vel: 0, len: 1})
 
+
     notes
 
   convertToDrums: (buffer, tempo, minInterval) ->
     chunks = @chunk(buffer, tempo, minInterval, 1)
     drumPitches = @convertToDrumPitches(chunks)
     merged = @mergeDrums(drumPitches)
-    stdzd = @standardizeClipLength(merged, minInterval)
+    stdzd = @standardize(merged, minInterval)
     return stdzd
 
   convertToNotes: (buffer, tempo, minInterval) ->
     chunks = @chunk(buffer, tempo, minInterval, 2)
     pitches = @convertToPitches(chunks)
     merged = @merge(pitches)
-    stdzd = @standardizeClipLength(merged, minInterval)
+    stdzd = @standardize(merged, minInterval)
     return stdzd
 
   nextPowerOf2: (n) ->
@@ -183,4 +198,4 @@ class Tunesmith.Models.PitchDetectorModel extends Backbone.Model
     n |= n >> 4
     n |= n >> 8
     n |= n >> 16
-    n++
+    ++n

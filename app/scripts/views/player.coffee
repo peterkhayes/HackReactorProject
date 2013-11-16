@@ -8,7 +8,7 @@ class Tunesmith.Views.PlayerView extends Backbone.View
     @listenTo(@collection, 'note', (e) =>
       @collection.tools('midi').play(e.type, e.note)
     )
-    @advance()
+    @interval = setInterval(@advance, 60000 / (@collection.params('tempo') * @collection.params('minInterval')))
 
   events: ->
     'mousedown .tempo.up': => @startChangingTempo(1)
@@ -17,16 +17,25 @@ class Tunesmith.Views.PlayerView extends Backbone.View
     'mouseout .tempo': => @stopChangingTempo()
 
   advance: =>
-    currentTime = @collection.params('currentTime')
-    @collection.params('currentTime', (currentTime + 1) % @collection.params('maxTime'))
-    @collection.play(currentTime)
+    minInterval = @collection.params('minInterval')
+    # Metronome
+    # if @collection.params('recordingDestination') and (@collection.params('currentTime') % minInterval) == 0
+    if (@collection.params('currentTime') % minInterval) == 0
+      step = (@collection.params('currentTime') % (4*minInterval))/4
+      @tick(step == 0)
 
-    if (@collection.params('currentTime') % @collection.params('minInterval')) == 0
-      step = (@collection.params('currentTime') % (4*@collection.params('minInterval')))/4
-      @tick()
+    if (@collection.params('currentTime') < 0) # Pre-recording.
+      @collection.tools('midi').clear()
+      @collection.params('currentTime', (@collection.params('currentTime') + 1))
+      if @collection.params('currentTime') == -1
+        setTimeout(@collection.record(), 60000 / (@collection.params('tempo') * minInterval))
+    else # Regular mode.
+      @collection.play(@collection.params('currentTime'))
+      @collection.params('currentTime', (@collection.params('currentTime') + 1) % @collection.params('maxTime'))
+      @collection.tools('midi').advance()
 
-    @collection.tools('midi').advance()
-    setTimeout(@advance, 60000 / @collection.params('tempo') / @collection.params('minInterval'))
+
+    # setTimeout(@advance, 60000 / (@collection.params('tempo') * minInterval))
 
   playSound: (type) =>
     @sounds[type].cloneNode().play()
@@ -41,14 +50,18 @@ class Tunesmith.Views.PlayerView extends Backbone.View
 
   stopChangingTempo: =>
     clearInterval(@tempoTimeout)
+    clearInterval(@interval)
+    @interval = setInterval(@advance, 60000 / (@collection.params('tempo') * @collection.params('minInterval')))
 
   render: ->
     @$el.html(Templates['playback_tab']({tempo: @collection.params('tempo')}))
     @$el
 
-  tick: ->
-    console.log('tick')
+  # Metronome.
+  tick: (loud) ->
+    # console.log(if loud then "TICK" else 'tick')
     @flash()
+    @collection.tools('midi').tick(loud)
 
   flash: ->
     @$el.addClass('flash')

@@ -21,8 +21,6 @@ class Tunesmith.Views.AppView extends Backbone.View
   events: ->
     'click header .newSong': ->
       @model.newSong()
-    'click header .newSection': ->
-      @model.newSection()
     'click header .save': ->
       @saveView.render()
     'click header .load': ->
@@ -49,6 +47,7 @@ class Tunesmith.Views.AppView extends Backbone.View
   resetClipViews: ->
     @playerView.remove()
     @playerView.unbind()
+    clearInterval(@playerView.interval)
     @clipsView.remove()
     @clipsView.unbind()
     @playerView = new Tunesmith.Views.PlayerView({collection: @model.get('cliplist')})

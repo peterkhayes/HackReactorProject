@@ -33,17 +33,20 @@ class Tunesmith.Collections.ClipCollection extends Backbone.Collection
       clip.play(time)
     )
 
-  record: (clip) ->
-    console.log 'Recording'
+  prerecord: (clip) ->
+    console.log "Preparing for recording, clip is #{clip}"
     @_tools.midi.loadInstrument(clip.get('type'))
-    @_params.currentTime = 0
+    @_tools.midi.clear()
+    @_params.currentTime = -4*@_params.minInterval
     @_params.recordingDestination = clip
+
+  record: ->
+    console.log 'Recording'
     @_tools.recorder.record()
 
   stopRecordingAndAddClip: ->
-    console.log 'Stopping recording, adding clip'
-
     clip = @_params.recordingDestination
+    console.log 'Stopping recording, adding clip #{clip}'
 
     @_tools.recorder.stop()
     @_tools.recorder.getBuffer( (buffer) => # Get the recorded buffer from the recorder.

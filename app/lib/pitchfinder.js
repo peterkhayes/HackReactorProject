@@ -2,16 +2,110 @@
  * of various pitch detection algorithms, created by
  * Joren Six of University College Ghent.
  *
- * Find the original project at
- * http://tarsos.0110.be/tag/TarsosDSP
- * or on Github at
- * https://github.com/JorenSix/TarsosDSP
+ * Contains the following algorithms:
+ * YIN (with and without FFT; the version with requires an external FFT library)
+ * Average Magnitude Difference
+ * Dynamic Wavelet
+ * McLeod Pitch Method
+ *
+ * Since this Javascript and we have first-class functions,
+ * each method creates and returns a pitch detector function
+ * with the given configuration.  When called with a float32Array
+ * representing an audio buffer, it returns the pitch.
+ *
+ * Methods vary in accuracy and speed.  I have found the best results with YIN.
+ *
+ * Find the original project at http://tarsos.0110.be/tag/TarsosDSP
+ * or on Github at https://github.com/JorenSix/TarsosDSP
  */
 
 'use strict';
 
-// Constructor function for the a YIN pitch dectector.
-var makeYIN = function(config) {
+var AMDF = function(config) {
+  config = config || {};
+
+  var AMDF = {};
+
+  var DEFAULT_MIN_FREQUENCY = 82,
+      DEFAULT_MAX_FREQUENCY = 1000,
+      DEFAULT_RATIO = 5,
+      DEFAULT_SENSITIVITY = 0.1,
+      DEFAULT_SAMPLE_RATE = 44100,
+      sampleRate = config.sampleRate || DEFAULT_SAMPLE_RATE,
+      minFrequency = config.minFrequency || DEFAULT_MIN_FREQUENCY,
+      maxFrequency = config.maxFrequency || DEFAULT_MAX_FREQUENCY,
+      sensitivity = config.sensitivity || DEFAULT_SENSITIVITY,
+      ratio = config.ratio || DEFAULT_RATIO,
+      amd = [],
+      maxPeriod = Math.round(sampleRate / minFrequency +0.5),
+      minPeriod = Math.round(sampleRate / maxFrequency +0.5),
+      result = {};
+
+  return function(float32AudioBuffer) {
+    var t,
+        minval = Infinity,
+        maxval = -Infinity,
+        frames1,
+        frames2,
+        calcSub,
+        maxShift = float32AudioBuffer.length;
+
+    // Find the average magnitude difference for each possible period offset.
+    for (var i = 0; i < maxShift; i++) {
+      if (minPeriod <= i && i <= maxPeriod) {
+        t = 0;
+        frames1 = []; // The magnitudes from the start of the buffer.
+        frames2 = []; // The magnitudes from the start of the buffer plus the offset.
+        for (var aux1 = 0, aux2 = i, t = 0; aux1 < maxShift - i; t++, aux2++, aux1++) {
+          frames1[t] = float32AudioBuffer[aux1]
+          frames2[t] = float32AudioBuffer[aux2]
+        }
+
+        // Take the difference between these frames.
+        var frameLength = frames1.length
+        calcSub = [];
+        for (var u = 0; u < frameLength; u++) {
+          calcSub[u] = frames1[u] - frames2[u];
+        }
+
+        // Sum the differences.
+        var summation = 0;
+        for (var l = 0; l < frameLength; l++) {
+          summation += Math.abs(calcSub[l]);
+        }
+        amd[i] = summation;
+      }
+    }
+
+    for (var j = minPeriod; j < maxPeriod; j++) {
+      if(amd[j] < minval) minval = amd[j];
+      if(amd[j] > maxval) maxval = amd[j];
+    }
+
+    var cutoff = Math.round((sensitivity * (maxval - minval)) + minval);
+    for (j = minPeriod; j <= maxPeriod && amd[j] > cutoff; j++);
+
+    var search_length = minPeriod / 2;
+    minval = amd[j];
+    var minpos = j;
+    for (i = j - 1; i < j + search_length && i <= maxPeriod; i++) {
+      if (amd[i] < minval) {
+        minval = amd[i];
+        minpos = i;
+      }
+    }
+
+    if (Math.round(amd[minpos] * ratio) < maxval) {
+      return {freq: sampleRate/minpos};
+    } else {
+      return {freq: -1};
+    }
+  };
+};
+
+
+// Constructor function for the YIN pitch dectector.
+var YIN = function(config) {
 
   config = config || {};
 
@@ -135,7 +229,7 @@ var makeYIN = function(config) {
 
 
   // Return the pitch of a given signal, or -1 if none is detected.
-  YIN.getPitch = function(float32AudioBuffer) {
+  return function(float32AudioBuffer) {
 
     // Step 2
     difference(float32AudioBuffer);
@@ -164,17 +258,12 @@ var makeYIN = function(config) {
     // Good luck!
     return result;
   };
-
-  return YIN;
-
 };
 
 // Construtor function for Dynamic Wavelet detector
-var makeDW = function(config) {
+var DW = function(config) {
 
   config = config || {};
-
-  var dw = {};
 
   var maxFLWTlevels = 6,
       maxF = 3000,
@@ -187,7 +276,7 @@ var makeDW = function(config) {
       maxs = [],
       result = {};
 
-  dw.getPitch = function(float32AudioBuffer) {
+  return function(float32AudioBuffer) {
     var pitchF = -1,
         curSamNb = float32AudioBuffer.length,
         nbMins,
@@ -356,18 +445,14 @@ var makeDW = function(config) {
     result.freq = pitchF;
 
     return result;
-  }
-
-  return dw;
+  };
 };
 
 // Constructor function for McLeod Pitch Method detector.
 // Note: Quite slow..
-var makeMPM = function(config) {
+var MPM = function(config) {
 
   config = config || {};
-
-  var MPM = {};
 
       /**
        * The expected size of an audio buffer (in samples).
@@ -528,7 +613,7 @@ var makeMPM = function(config) {
     }
   };
 
-  MPM.getPitch = function(float32AudioBuffer) {
+  return function(float32AudioBuffer) {
 
     // 0. Clear old results.
     var pitch,
@@ -589,15 +674,5 @@ var makeMPM = function(config) {
     result.probability = highestAmplitude;
     result.freq = pitch;
     return result;
-  }
-
-
-  return MPM;
+  };
 };
-
-
-
-
-
-
-

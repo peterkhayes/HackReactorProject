@@ -5,7 +5,10 @@ class Tunesmith.Models.SoundPlayerModel extends Backbone.Model
 
   initialize: (cb, context) =>
 
-    instruments = {
+    sounds = {
+      metronome: {
+        buffers: []
+      }
       hiphop_kit: {
         notes: [1, 2, 3]
       }
@@ -19,34 +22,39 @@ class Tunesmith.Models.SoundPlayerModel extends Backbone.Model
         notes: [39, 44, 49, 54, 59, 64, 69, 74]
       }
       e_guitar: {
-        notes: [40, 45, 50, 57, 62]
+        notes: [44, 49, 54, 59, 64, 69, 74]
       }
       a_guitar: {
-        notes: []
+        notes: [44, 49, 54, 59, 64, 69, 74]
       }
       bass: {
-        notes: []
+        notes: [62, 57, 52, 47, 42]
       }
       synth: {
-        notes: []
+        notes: [44, 49, 54, 59, 64, 69, 74]
       }
       sax: {
         notes: []
       }
       strings: {
-        notes: []
+        notes: [44, 49, 54, 59, 64, 69, 74]
       }
     }
 
-    @set 'instruments', instruments
+    @set 'sounds', sounds
     @set 'context', context
     @set 'noteEvents', []
+
+    @loadBuffer("/audio/metronome/tick.mp3", sounds.metronome.buffers, 0)
+
     cb()
+
+
 
   # Load an instrument in the background.
   loadInstrument: (name) ->
     console.log "attempting to load #{name}"
-    instrument = @get('instruments')[name]
+    instrument = @get('sounds')[name]
     unless instrument.buffers
       instrument.buffers = []
       for note, i in instrument.notes
@@ -65,7 +73,11 @@ class Tunesmith.Models.SoundPlayerModel extends Backbone.Model
           if (!buffer)
             console.log "error decoding file data for #{url}"
             return
-          destination[i] = buffer
+          console.log "Downloaded #{url}"
+          if i?
+            destination[i] = buffer
+          else
+            destination = buffer
         (error) ->
           console.error 'decodeAudioData error', error
       )
@@ -79,8 +91,8 @@ class Tunesmith.Models.SoundPlayerModel extends Backbone.Model
     context = @get('context')
 
     # First we find the closest note that we have a sample for.
-    instruments = @get 'instruments'
-    notes = instruments[type].notes
+    sounds = @get 'sounds'
+    notes = sounds[type].notes
     index = 0
     # Move forward until we are at or past the sample
     while notes[index] < note.pitch and index < notes.length - 1
@@ -89,15 +101,15 @@ class Tunesmith.Models.SoundPlayerModel extends Backbone.Model
     if (notes[index] - note.pitch) > (note.pitch - notes[index-1]) then index--
 
     # Make a source node with the correct audio.
-    source = context.createBufferSource();
-    unless instruments[type].buffers
+    source = context.createBufferSource()
+    unless (sounds[type].buffers and sounds[type].buffers[index])
       console.log "instrument not loaded yet"
       return
-    source.buffer = instruments[type].buffers[index]
+    source.buffer = sounds[type].buffers[index]
     # Pitch shift the playback and play!
     source.playbackRate.value = Math.pow(2,(note.pitch - notes[index])/12)
     source.gain.value = (note.vel / 127)
-    source.connect(context.destination);
+    source.connect(context.destination)
     source.noteOn(0)
 
     # Push the node into our events loop so we can end it later.
@@ -111,7 +123,7 @@ class Tunesmith.Models.SoundPlayerModel extends Backbone.Model
         e.len--
         stillActive.push(e)
       else
-        @stopNote(e.source, e.gain)
+        @stopNote(e.source)
     @set 'noteEvents', stillActive
 
   stopNote: (source) =>
@@ -124,5 +136,14 @@ class Tunesmith.Models.SoundPlayerModel extends Backbone.Model
       ,1)
 
   clear: ->
-    @set 'noteEvents', []
+    for e in @get('noteEvents')
+      @stopNote(e.source)
 
+  tick: (loud) ->
+    context = @get('context')
+
+    source = context.createBufferSource()
+    source.buffer = @get('sounds').metronome.buffers[0]
+    source.connect(context.destination)
+    if loud then source.gain.value = 2
+    source.noteOn(0)

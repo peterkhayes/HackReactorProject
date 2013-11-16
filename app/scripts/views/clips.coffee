@@ -84,7 +84,7 @@ class Tunesmith.Views.ClipsView extends Backbone.View
         else
           clip = new Tunesmith.Models.ClipModel({type: type, notes: []})
           @collection.add(clip)
-        @collection.record(clip)
+        @collection.prerecord(clip)
       when 'stopRecording'
         @collection.stopRecordingAndAddClip()
         @render([], "Processing...", true) # No buttons here, so pass in []
@@ -102,6 +102,11 @@ class Tunesmith.Views.ClipsView extends Backbone.View
 
   renderEditor: (clip) ->
     console.log "editing...", clip
+    noteSTR = "#{clip.get('notes').length}: "
+    for note in clip.get('notes')
+      noteSTR += note.pitch
+      noteSTR += ", "
+    console.log noteSTR
     @editTarget = clip
     @renderSpecial('edit')
 

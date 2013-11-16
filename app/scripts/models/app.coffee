@@ -31,6 +31,12 @@ class Tunesmith.Models.AppModel extends Backbone.Model
     @get('cliplist').reset()
     @get('cliplist').off()
 
+    if newSong and newSong.clips
+      for clip in newSong.clips
+        console.log clip
+        if clip.notes.length > maxTime
+          maxTime = clip.notes.length
+
     newSong = newSong or {}
     newSong.tempo = newSong.tempo or 120
 
@@ -44,6 +50,7 @@ class Tunesmith.Models.AppModel extends Backbone.Model
     newCL = new Tunesmith.Collections.ClipCollection(newSong.clips)
 
     newCL.params('tempo', newSong.tempo)
+    if maxTime then newCL.params('maxTime', maxTime)
     newCL.tools('midi', midi)
     newCL.tools('recorder', recorder)
     newCL.tools('pitchDetector', @get('pitchDetector'))
@@ -56,7 +63,6 @@ class Tunesmith.Models.AppModel extends Backbone.Model
     @set('cliplist', newCL)
     @set('title', title)
     @trigger('clearSong')
-
 
   login: (email, pass) =>
     console.log("attempting to log in...")
