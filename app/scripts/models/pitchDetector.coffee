@@ -101,7 +101,7 @@ class Tunesmith.Models.PitchDetectorModel extends Backbone.Model
       # console.log(sus.pitch, "---", note.pitch, "---", next.pitch, dnext.pitch)
 
       # Fix onset and ending errors.
-      if note.pitch != sus.pitch and next.pitch == dnext.pitch
+      if note.pitch != sus.pitch and (next.pitch == dnext.pitch or dnext.pitch == 0)
         if Math.abs(note.pitch - next.pitch) == 1
           console.log("onset error")
           note.pitch = next.pitch

@@ -289,4 +289,4 @@ void function (namespace) {
 	}
 	
 	namespace.complex = complex
-}(FFT)
+}(FFT);

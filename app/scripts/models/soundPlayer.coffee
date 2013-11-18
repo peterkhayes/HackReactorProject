@@ -45,7 +45,7 @@ class Tunesmith.Models.SoundPlayerModel extends Backbone.Model
     @set 'context', context
     @set 'noteEvents', []
 
-    @loadBuffer("/audio/metronome/tick.mp3", sounds.metronome.buffers, 0)
+    @loadBuffer("audio/metronome/tick.mp3", sounds.metronome.buffers, 0)
 
     cb()
 

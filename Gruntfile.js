@@ -240,8 +240,9 @@ module.exports = function (grunt) {
                     src: [
                         '*.{ico,txt}',
                         '.htaccess',
-                        'images/{,*/}*.{webp,gif}',
-                        'styles/fonts/{,*/}*.*'
+                        'images/{,*/}*.{webp,gif,jpg,png,jpeg}',
+                        'styles/fonts/{,*/}*.*',
+                        'audio/{,*/}*.*'
                     ]
                 }]
             }
@@ -327,11 +328,11 @@ module.exports = function (grunt) {
         'handlebars',
         'stylus',
         'useminPrepare',
-        'imagemin',
+        // 'imagemin',
         'htmlmin',
         'concat',
         'cssmin',
-        'uglify',
+        //'uglify',
         'copy',
         'rev',
         'usemin'

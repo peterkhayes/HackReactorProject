@@ -24,12 +24,12 @@ this.onmessage = function(e){
 
 function init(config){
   sampleRate = config.sampleRate;
-}
+};
 
 function record(inputBuffer){
   recBuffers.push(inputBuffer);
   recLength += inputBuffer.length;
-}
+};
 
 // function breakIntoMidiChunks(tempo) {
 //   // Get a single buffer of all the audio we recorded.
@@ -49,12 +49,12 @@ function record(inputBuffer){
 function getBuffer() {
   this.postMessage(mergeBuffers(recBuffers, recLength));
   this.clear()
-}
+};
 
 function clear(){
   recLength = 0;
   recBuffers = [];
-}
+};
 
 function mergeBuffers(recBuffers, recLength){
   var result = new Float32Array(recLength);
@@ -64,4 +64,4 @@ function mergeBuffers(recBuffers, recLength){
     offset += recBuffers[i].length;
   }
   return result;
-}
+};
