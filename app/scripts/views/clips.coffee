@@ -8,8 +8,6 @@ class Tunesmith.Views.ClipsView extends Backbone.View
     @listenTo(@collection, 'finishedRecording', @render)
     @listenTo(@collection, 'edit', @renderEditor)
     @listenTo(@collection, 'record', => @renderSpecial('record'))
-    # @collection.on('finishedRecording', @render, @)
-    # @collection.on('edit', @renderEditor, @)
 
     @currentTab = new Tunesmith.Views.CurrentTabView()
 
@@ -93,6 +91,7 @@ class Tunesmith.Views.ClipsView extends Backbone.View
       when 'delete'
         console.log(@editTarget)
         @collection.remove(@editTarget)
+        @collection.trigger('delete')
         @render()
       when 'edit'
         @render([

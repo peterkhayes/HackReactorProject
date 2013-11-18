@@ -26,7 +26,7 @@ class Tunesmith.Models.PitchDetectorModel extends Backbone.Model
     toneAVG = 0
     toneAVGcount = 0
     chunkCount = 0
-    for chunk in chunks
+    for chunk, i in chunks
       chunkCount++
       tone = YINDetector(chunk).freq
       if (0 < tone < 5000)

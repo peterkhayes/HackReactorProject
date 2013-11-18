@@ -2,7 +2,7 @@
 {{#if user}}
   <h2>Save your song:</h2>
   {{#unless existingTitle}}
-    <input class='title' type='text' placeholder="Your Song's Title">
+    <input class='title' type='text' placeholder="Your Song's Title" autofocus="autofocus">
     <br><button class='submit'>Save</button>
   {{else}}
     <p class='overwrite'>Would you like to overwrite the song '<span class='title'>{{existingTitle}}</span>'?</p><br>
@@ -10,5 +10,5 @@
     <button class='noOverwrite'>No</button>
   {{/unless}}
 {{else}}
-  <h2>You need to log in before you can save your songs!</h2>
+  <h2 class='needToLogIn'>You need to log in before<br>you can save your songs!</h2>
 {{/if}}

@@ -19,7 +19,6 @@ class Tunesmith.Views.PlayerView extends Backbone.View
   advance: =>
     minInterval = @collection.params('minInterval')
     # Metronome
-    # if @collection.params('recordingDestination') and (@collection.params('currentTime') % minInterval) == 0
     if (@collection.params('currentTime') % minInterval) == 0
       step = (@collection.params('currentTime') % (4*minInterval))/4
       @tick(step == 0)
@@ -52,6 +51,7 @@ class Tunesmith.Views.PlayerView extends Backbone.View
     clearInterval(@tempoTimeout)
     clearInterval(@interval)
     @interval = setInterval(@advance, 60000 / (@collection.params('tempo') * @collection.params('minInterval')))
+    @collection.trigger('change')
 
   render: ->
     @$el.html(Templates['playback_tab']({tempo: @collection.params('tempo')}))

@@ -1,6 +1,5 @@
 'use strict';
 
-# Controls the midi-js library.
 class Tunesmith.Models.SoundPlayerModel extends Backbone.Model
 
   initialize: (cb, context) =>

@@ -66,7 +66,7 @@ class Tunesmith.Models.AppModel extends Backbone.Model
       midi.loadInstrument(clip.get('type'))
     )
 
-    @listenTo(newCL, 'change', @attemptToSave)
+    @listenTo(newCL, 'add change delete', @attemptToSave)
     @set('cliplist', newCL)
     @set('title', title)
     @trigger('clearSong')

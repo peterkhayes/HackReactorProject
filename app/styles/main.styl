@@ -55,7 +55,7 @@ clip_border_radius = 10px
 
 std_border = 1px solid black
 
-title_color = #e80
+title_color = #e30
 
 // Actual CSS
 *
@@ -176,6 +176,7 @@ li
     cursor: pointer
     text-decoration: underline
     color: green
+    font-size: 12px
     &:hover
       color lighten(@color, 20%)
   .song
@@ -187,6 +188,9 @@ li
       color lighten(@color, 20%)
   .error
     color: #F66
+  .needToLogIn
+    margin-top: 115px
+    text-align: center
 
 #twitter-widget-0
   position: fixed
@@ -201,38 +205,45 @@ li
   &.title
     font-size: 100px
   &.subtitle
-    margin-bottom: 40px
+    margin-bottom: 20px
   &.stepsContainer
     position: relative
     width: 1000px
     left: 50%
     margin-left: -500px
-    margin-bottom: 20px
+    margin-bottom: 50px
+    margin-top: 30px
     .step
+      cursor: default
       float: left
       padding: 20px
       margin: 17px
       border-radius: 20px
-      border: 8px solid title_color
+      border: 8px solid
+      border-color: title_color
       background-color: #FEA
       box-shadow: 1px 1px 3px darken(title_color, 40%)
+      &:hover
+        background-color: lighten(@background-color, 30%)
+        border-color: lighten(@border-color, 30%)
       img
         width: 150px
         height: 150px
         border-radius: 5px
       p
-        color: #222
+        color: title_color
+        font-weight: bold
         text-align: center
         margin-top: 10px
         font-size: 18px
   &.compatibility
     color: #111
-    position: fixed
     text-align: center
+    position: relative
+    left: 50%
+    margin-left -400px
     width: 800px
     bottom: 20px
-    left: 50%
-    margin-left: -400px
   &.permissionsArrow
     position: fixed
     right: -40px
