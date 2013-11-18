@@ -15,6 +15,14 @@ class Tunesmith.Models.AppModel extends Backbone.Model
           console.log(user)
           @set 'user', user
           @trigger('authSuccess')
+          if @get('cliplist').length == 0
+            @load('Unsaved Work', (newSong, title) =>
+              console.log "Found unsaved work."
+              if newSong and title
+                @newSong(newSong, title)
+            , ->
+              console.log "No unsaved work."
+            )
         else
           console.log("Not Logged In")
           @set 'user', null
@@ -90,7 +98,7 @@ class Tunesmith.Models.AppModel extends Backbone.Model
 
   attemptToSave: =>
     if @get('user')
-      title = @get('title') || '---Unsaved Work---'
+      title = @get('title') || 'Unsaved Work'
       @save('Unsaved Work')
 
   save: (title) =>
