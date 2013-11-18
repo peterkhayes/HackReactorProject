@@ -19,13 +19,19 @@ How to use
 
 Tech
 =======
-Written in Coffeescript, Backbone.js, and Firebase.
-
+<strong>Language</strong>: Coffeescript  
+<strong>MVC</strong>: Backbone.js  
+<strong>Persistence</strong>: Firebase (an awesome solution for serverless databases: sync your data real time to the cloud)  
+<strong>Authentication</strong>: Firebase Simple Login  
+<strong>CSS</strong>: Stylus  
+<strong>Templating</strong>: Handlebars  
+<strong>Pitch Detection</strong>: My own [pitchfinder.js](https://github.com/peterkhayes/pitchfinder.js "pitchfinder.js")  
+<strong>Playback</strong>: My other baby [instrumental.js](https://github.com/peterkhayes/instrumental.js "instrumental.js")
 
 Many thanks to
 ==============
 * Matt Diamond (https://github.com/mattdiamond/), for Recorder.js
 * Jens Nockert (https://github.com/JensNockert/), for his FFT algorithm
 * Joren Six (https://github.com/JorenSix/), whose TarsosDSP package contained code for the YIN pitch detection algorithm that I ported to Javascript. 
-* The excellent team at Firebase, for their awesome tech support team.
+* The excellent team at Firebase, for their awesome tech support.
 * HACK REACTOR, the best place in the world to learn to program.
