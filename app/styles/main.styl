@@ -55,6 +55,8 @@ clip_border_radius = 10px
 
 std_border = 1px solid black
 
+title_color = #e80
+
 // Actual CSS
 *
   margin 0
@@ -194,8 +196,8 @@ li
 .loading
   &.title, &.subtitle
     text-align:center
-    color: #E80
-    text-shadow: 1px 1px 3px #A40
+    color: title_color
+    text-shadow: 1px 1px 3px darken(title_color, 40%)
   &.title
     font-size: 100px
   &.subtitle
@@ -209,10 +211,11 @@ li
     .step
       float: left
       padding: 20px
-      margin: 15px
+      margin: 17px
       border-radius: 20px
-      border: 10px solid #E80
+      border: 8px solid title_color
       background-color: #FEA
+      box-shadow: 1px 1px 3px darken(title_color, 40%)
       img
         width: 150px
         height: 150px

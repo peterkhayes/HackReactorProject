@@ -3,12 +3,7 @@
 class Tunesmith.Models.AppModel extends Backbone.Model
 
   initialize: ->
-    cliplist = new Tunesmith.Collections.ClipCollection()
-    cliplist.tools('midi', @get('midi'))
-    cliplist.tools('recorder', @get('recorder'))
-    cliplist.tools('pitchDetector', @get('pitchDetector'))
-    cliplist.tools('metronome', @get('metronome'))
-    @set('cliplist', cliplist)
+    @newSong()
 
     @set('auth', new FirebaseSimpleLogin(
       new Firebase('https://tunesmith.firebaseio.com/'), (error, user) =>
@@ -28,8 +23,10 @@ class Tunesmith.Models.AppModel extends Backbone.Model
 
   newSong: (newSong, title) =>
     console.log "making a new song with data: ", newSong
-    @get('cliplist').reset()
-    @get('cliplist').off()
+
+    if @get('cliplist')
+      @get('cliplist').reset()
+      @get('cliplist').off()
 
     maxTime = 0
     if newSong and newSong.clips
@@ -61,6 +58,7 @@ class Tunesmith.Models.AppModel extends Backbone.Model
       midi.loadInstrument(clip.get('type'))
     )
 
+    @listenTo(newCL, 'change', @attemptToSave)
     @set('cliplist', newCL)
     @set('title', title)
     @trigger('clearSong')
@@ -89,6 +87,11 @@ class Tunesmith.Models.AppModel extends Backbone.Model
     console.log "logging out"
     @get('auth').logout()
     @set 'user', null
+
+  attemptToSave: =>
+    if @get('user')
+      title = @get('title') || '---Unsaved Work---'
+      @save('Unsaved Work')
 
   save: (title) =>
     cliplist = @get 'cliplist'
