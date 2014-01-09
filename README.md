@@ -1,7 +1,7 @@
 Tunesmith
 =========
 
-[Try it out here!](http://tunesmith.azurewebsites.net/ "Tunesmith")
+[Try it out here!](http://tunesmith.azurewebsites.net/ "Tunesmith")  But only in Chrome on a desktop.
 
 Record songs with only your voice - no instruments required!
 
