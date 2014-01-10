@@ -3,6 +3,8 @@ Tunesmith
 
 Record songs with only your voice - no instruments required!
 
+[Try it out here!](http://tunesmith.azurewebsites.net/ "Tunesmith")  But only in Chrome on a desktop.
+
 Tunesmith is a web application that uses your voice as a substitute for instruments.  You can sing or beatbox into your microphone, and the app will convert the sounds into the instrument of your choice.  
 
 How to use
@@ -34,4 +36,4 @@ Many thanks to
 * Jens Nockert (https://github.com/JensNockert/), for his FFT algorithm
 * Joren Six (https://github.com/JorenSix/), whose TarsosDSP package contained code for the YIN pitch detection algorithm that I ported to Javascript. 
 * The excellent team at Firebase, for their awesome tech support.
-* HACK REACTOR, the best place in the world to learn to program.
+* HACK REACTOR, the best place in the world to become a web developing superhero.
