@@ -3,15 +3,13 @@ var recLength = 0,
   sampleRate;
 
 this.onmessage = function(e){
+  console.log("Worker got a message:", e.data.command);
   switch(e.data.command){
     case 'init':
       init(e.data.config);
       break;
     case 'record':
       record(e.data.buffer);
-      break;
-    case 'breakIntoMidiChunks':
-      breakIntoMidiChunks(e.data.tempo);
       break;
     case 'getBuffer':
       getBuffer();
@@ -30,21 +28,6 @@ function record(inputBuffer){
   recBuffers.push(inputBuffer);
   recLength += inputBuffer.length;
 };
-
-// function breakIntoMidiChunks(tempo) {
-//   // Get a single buffer of all the audio we recorded.
-//   var buffer = mergeBuffers(recBuffers, recLength);
-
-//   // Divided this buffer into chunks, each with one 16th note of audio.
-//   var chunks = [];
-//   var chunkLength = Math.round(165375/tempo);
-//   var end = recLength - chunkLength;
-//   for (var i = 0; i < end; i += chunkLength) {
-//     chunks.push(buffer.subarray(i, i+chunkLength));
-//   }
-  
-//   this.postMessage(chunks);
-// }
 
 function getBuffer() {
   this.postMessage(mergeBuffers(recBuffers, recLength));

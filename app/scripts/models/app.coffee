@@ -9,28 +9,22 @@ class Tunesmith.Models.AppModel extends Backbone.Model
       new Firebase('https://tunesmith.firebaseio.com/'), (error, user) =>
         window.CurrentUser = => console.log(@get('user'))
         if error
-          console.log(error)
           @trigger('authError', error)
         else if user
-          console.log(user)
           @set 'user', user
           @trigger('authSuccess')
           if @get('cliplist').length == 0
             @load('Unsaved Work', (newSong, title) =>
-              console.log "Found unsaved work."
               if newSong and title
                 @newSong(newSong, title)
             , ->
-              console.log "No unsaved work."
             )
         else
-          console.log("Not Logged In")
           @set 'user', null
       )
     )
 
   newSong: (newSong, title) =>
-    console.log "making a new song with data: ", newSong
 
     if @get('cliplist')
       @get('cliplist').reset()
@@ -39,7 +33,6 @@ class Tunesmith.Models.AppModel extends Backbone.Model
     maxTime = 0
     if newSong and newSong.clips
       for clip in newSong.clips
-        console.log clip
         if clip.notes.length > maxTime
           maxTime = clip.notes.length
 
@@ -72,27 +65,22 @@ class Tunesmith.Models.AppModel extends Backbone.Model
     @trigger('clearSong')
 
   login: (email, pass) =>
-    console.log("attempting to log in...")
     @get('auth').login('password', {
         email: email
         password: pass
       })
 
   signup: (email, pass) =>
-    console.log("attempting to sign up...")
     @get('auth').createUser(email, pass, (error, user) =>
-      console.log @
       if error
-        console.log(error)
         @trigger('authError', error)
       else
-        console.log(user)
         @set 'user', user
         @trigger('authSuccess')
+        @attemptToSave()
     )
 
   logout: ->
-    console.log "logging out"
     @get('auth').logout()
     @set 'user', null
 
@@ -114,7 +102,6 @@ class Tunesmith.Models.AppModel extends Backbone.Model
       })
     )
     user = @get('user')
-    console.log "Sending song data for #{title} to user #{user.uid} firebase", data
     fbSong = new Firebase("https://tunesmith.firebaseio.com/songs/#{user.uid}/#{title}")
     fbSong.set(data, (error) ->
       console.log(if error then error else "Song #{title} saved!")
@@ -122,7 +109,6 @@ class Tunesmith.Models.AppModel extends Backbone.Model
     @set('title', title)
 
   load: (title, success_cb, fail_cb) =>
-    console.log("loading #{title} from server")
     fbSong = new Firebase("https://tunesmith.firebaseio.com/songs/#{@get('user').uid}/#{title}")
     fbSong.once('value', (song) =>
       if song.val()
@@ -132,10 +118,11 @@ class Tunesmith.Models.AppModel extends Backbone.Model
     )
 
   getSongList: (cb) =>
-    console.log("getting all of #{@get('user').uid}'s songs")
     fbSongs = new Firebase("https://tunesmith.firebaseio.com/songs/#{@get('user').uid}")
     fbSongs.once('value', (songs) =>
-      console.log(songs.val())
-      console.log((song for song of songs.val()))
       cb((song for song of songs.val()))
     )
+
+  undo: ->
+    @get('cliplist').undo()
+

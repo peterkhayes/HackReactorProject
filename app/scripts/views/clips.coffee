@@ -5,7 +5,7 @@ class Tunesmith.Views.ClipsView extends Backbone.View
   className: 'clips clearfix'
 
   initialize: ->
-    @listenTo(@collection, 'finishedRecording', @render)
+    @listenTo(@collection, 'undo finishedRecording', @render)
     @listenTo(@collection, 'edit', @renderEditor)
     @listenTo(@collection, 'record', => @renderSpecial('record'))
 
@@ -90,8 +90,7 @@ class Tunesmith.Views.ClipsView extends Backbone.View
         @render([], "Processing...", true) # No buttons here, so pass in []
       when 'delete'
         console.log(@editTarget)
-        @collection.remove(@editTarget)
-        @collection.trigger('delete')
+        @collection.removeClip(@editTarget)
         @render()
       when 'edit'
         @render([

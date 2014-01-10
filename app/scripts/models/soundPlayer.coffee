@@ -48,8 +48,6 @@ class Tunesmith.Models.SoundPlayerModel extends Backbone.Model
 
     cb()
 
-
-
   # Load an instrument in the background.
   loadInstrument: (name) ->
     console.log "attempting to load #{name}"

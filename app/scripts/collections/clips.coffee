@@ -11,6 +11,7 @@ class Tunesmith.Collections.ClipCollection extends Backbone.Collection
       currentTime: 0
       maxTime: 32
       recordingDestination: null
+      lastDeletion: null
     }
     @_tools = {}
 
@@ -32,21 +33,28 @@ class Tunesmith.Collections.ClipCollection extends Backbone.Collection
     )
 
   prerecord: (clip) ->
-    console.log "Preparing for recording, clip is #{clip}"
     @_tools.midi.loadInstrument(clip.get('type'))
     @_tools.midi.clear()
     @_params.currentTime = -4*@_params.minInterval
     @_params.recordingDestination = clip
 
+  removeClip: (clip) ->
+    @_params.lastDeletion = clip
+    @remove(clip)
+    @trigger('delete')
+
+  undo: ->
+    @add(@_params.lastDeletion)
+    @_params.lastDeletion = null
+    @trigger('undo')
+
   record: ->
-    console.log 'Recording'
     @trigger('record')
     @_tools.recorder.record()
 
   stopRecordingAndAddClip: ->
     clip = @_params.recordingDestination
-    console.log 'Stopping recording, adding clip #{clip}'
-
+    debugger
     @_tools.recorder.stop()
     @_tools.recorder.getBuffer( (buffer) => # Get the recorded buffer from the recorder.
       # Process the notes - NOTE: BLOCKING.

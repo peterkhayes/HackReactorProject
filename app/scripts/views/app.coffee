@@ -18,6 +18,11 @@ class Tunesmith.Views.AppView extends Backbone.View
     @listenTo(@model, 'clearSong', @resetClipViews)
     @render()
 
+    $(window).keydown((e) =>
+      if e.keyCode == 90 and e.ctrlKey
+        @model.undo()
+    )
+
   events: ->
     'click header .newSong': ->
       @model.newSong()
@@ -25,8 +30,6 @@ class Tunesmith.Views.AppView extends Backbone.View
       @saveView.render()
     'click header .load': ->
       @loadView.render()
-    'click header .export': ->
-      @model.export()
     'click header .login': ->
       @authView.render('login')
     'click header .signup': ->

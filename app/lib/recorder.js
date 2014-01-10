@@ -2,12 +2,12 @@
 
   var WORKER_PATH = 'lib/recorderWorker.js';
 
-  var Recorder = function(source, cfg){
-    var config = cfg || {};
-    var bufferLen = config.bufferLen || 4096;
+  var Recorder = function(source){
+    var bufferLen = 4096;
     this.context = source.context;
     this.node = this.context.createJavaScriptNode(bufferLen, 1, 1);
-    var worker = new Worker(config.workerPath || WORKER_PATH);
+    var worker = new Worker(WORKER_PATH);
+    console.log(worker);
     worker.postMessage({
       command: 'init',
       config: {
@@ -23,7 +23,7 @@
         command: 'record',
         buffer: e.inputBuffer.getChannelData(0)
       });
-    }
+    };
 
     this.configure = function(cfg){
       for (var prop in cfg){
@@ -31,31 +31,24 @@
           config[prop] = cfg[prop];
         }
       }
-    }
+    };
 
     this.record = function(){
       recording = true;
-    }
+    };
 
     this.stop = function(){
       recording = false;
-    }
+    };
 
     this.clear = function(){
       worker.postMessage({ command: 'clear' });
-    }
+    };
 
     this.getBuffer = function(cb) {
+      console.log(cb);
       currCallback = cb || config.callback;
-      worker.postMessage({ command: 'getBuffer' })
-    }
-
-    this.breakIntoMidiChunks = function(cb) {
-      currCallback = cb || function(data) {console.log(data);};
-      worker.postMessage({
-        command:'breakIntoMidiChunks',
-        tempo: tempo
-      });
+      worker.postMessage({ command: 'getBuffer' });
     };
 
     worker.onmessage = function(e){

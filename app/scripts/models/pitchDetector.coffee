@@ -4,7 +4,6 @@ class Tunesmith.Models.PitchDetectorModel extends Backbone.Model
 
   initialize: (cb, context) ->
     @set "context", context
-    @set "chunkingFactor", 2
     cb()
 
   getNote: (frequency) ->
@@ -18,9 +17,8 @@ class Tunesmith.Models.PitchDetectorModel extends Backbone.Model
     end = buffer.length - chunkLength;
     (buffer.subarray(x, x + chunkLength) for x in [0..end] by chunkLength)
 
-  convertToPitches: (chunks) ->
+  convertToPitches: (chunks, chunkingFactor) ->
     pitches = []
-    chunkingFactor = @get 'chunkingFactor'
     chunkLength = chunks[0].length
     YINDetector = YIN({butterLength: chunkLength})
     toneAVG = 0
@@ -30,16 +28,14 @@ class Tunesmith.Models.PitchDetectorModel extends Backbone.Model
       chunkCount++
       tone = YINDetector(chunk).freq
       if (0 < tone < 5000)
-        toneAVG += tone
-        toneAVGcount++
+        toneAVG += tone * (1 + chunkingFactor - chunkCount)
+        toneAVGcount += (1 + chunkingFactor - chunkCount)
       if chunkCount == chunkingFactor
         if toneAVGcount >= (chunkingFactor - 1)
           toneAVG /= toneAVGcount
           pitches.push({pitch: @getNote(toneAVG), vel: 128, len: 1})
-          # console.log("Calculated Tone: #{toneAVG}")
         else
           pitches.push({pitch: 0, vel: 0, len: 1, ac: 0})
-          # console.log("No calculated tone.")
         toneAVG = 0
         toneAVGcount = 0
         chunkCount = 0
@@ -93,12 +89,10 @@ class Tunesmith.Models.PitchDetectorModel extends Backbone.Model
     pitches
 
   merge: (notes) ->
-    sus = {pitch: 0};
+    sus = {pitch: 0}
     for note, i in notes
       next = notes[i+1] || {pitch: 0}
       dnext = notes[i+2] || {pitch: 0}
-
-      # console.log(sus.pitch, "---", note.pitch, "---", next.pitch, dnext.pitch)
 
       # Fix onset and ending errors.
       if note.pitch != sus.pitch and (next.pitch == dnext.pitch or dnext.pitch == 0)
@@ -149,9 +143,9 @@ class Tunesmith.Models.PitchDetectorModel extends Backbone.Model
     notes
 
 
-  standardize: (notes, minInterval) ->
+  standardize: (notes, tempo, minInterval) ->
     # Deal with latency
-    notes = notes.slice(2)
+    notes = notes.slice(Math.round(240/tempo))
     # Lol guys check out this hack:
     onBeatCount = 0
     offBeatCount = 0
@@ -181,14 +175,18 @@ class Tunesmith.Models.PitchDetectorModel extends Backbone.Model
     chunks = @chunk(buffer, tempo, minInterval, 1)
     drumPitches = @convertToDrumPitches(chunks)
     merged = @mergeDrums(drumPitches)
-    stdzd = @standardize(merged, minInterval)
+    stdzd = @standardize(merged, tempo, minInterval)
     return stdzd
 
   convertToNotes: (buffer, tempo, minInterval) ->
-    chunks = @chunk(buffer, tempo, minInterval, 2)
-    pitches = @convertToPitches(chunks)
+    chunks = @chunk(buffer, tempo, minInterval, 2) # 3 is the chunking factor
+    console.log "chunks", chunks
+    pitches = @convertToPitches(chunks, 2)
+    console.log "pitches", pitches
     merged = @merge(pitches)
-    stdzd = @standardize(merged, minInterval)
+    console.log "merged", merged
+    stdzd = @standardize(merged, tempo, minInterval)
+    console.log "stdzd", stdzd
     return stdzd
 
   nextPowerOf2: (n) ->
