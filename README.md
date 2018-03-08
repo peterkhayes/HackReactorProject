@@ -1,11 +1,7 @@
-Tunesmith
+Record songs with only your voice - no instruments required!
 =========
 
-Record songs with only your voice - no instruments required!
-
-[Try it out here!](http://tunesmith.azurewebsites.net/ "Tunesmith")  But only in Chrome on a desktop.
-
-Tunesmith is a web application that uses your voice as a substitute for instruments.  You can sing or beatbox into your microphone, and the app will convert the sounds into the instrument of your choice.  
+This is a web application that uses your voice as a substitute for instruments.  You can sing or beatbox into your microphone, and the app will convert the sounds into the instrument of your choice.  
 
 How to use
 ==========
